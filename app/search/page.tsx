@@ -1,0 +1,98 @@
+import { prisma } from "@/lib/prisma";
+import SearchLayout from "@/components/search/layout/SearchLayout";
+import { mapProperty } from "@/lib/mappers/mapProperty";
+
+import {
+  getCache,
+  setCache,
+  createCacheKey,
+} from "@/lib/searchCache";
+
+export default async function SearchPage(
+  props: {
+    searchParams: Promise<Record<string, string | undefined>>;
+  }
+) {
+  const searchParams = await props.searchParams;
+
+  const q = searchParams.q || "";
+  const status = searchParams.status || "all";
+  const type = searchParams.type || "all";
+  const state = searchParams.state || "all";
+  const sortBy = searchParams.sortBy || "relevance";
+  const petFriendly = searchParams.petFriendly === "true";
+  const minPrice = searchParams.minPrice ? parseInt(searchParams.minPrice) : null;
+  const maxPrice = searchParams.maxPrice ? parseInt(searchParams.maxPrice) : null;
+
+  // 🧠 CREATE CACHE KEY
+  const cacheKey = createCacheKey({
+    q,
+    status,
+    type,
+    sortBy,
+  });
+
+  // ⚡ CHECK CACHE FIRST
+  /*const cached = getCache(cacheKey);
+  if (cached) {
+      return <SearchLayout properties={cached as any} />;
+  }*/
+
+  // 🗄️ DATABASE QUERY
+  const raw = await prisma.property.findMany({
+    where: {
+      AND: [
+        status !== "all" ? { listingType: status } : {},
+        type !== "all"
+          ? {
+            propertyType: {
+              in: type.split("|").map((t) => decodeURIComponent(t.trim())),
+            },
+          }
+          : {},
+        petFriendly ? { petFriendly: true } : {},
+        state !== "all" ? { state: { equals: state, mode: "insensitive" } } : {},
+        minPrice ? { price: { gte: minPrice } } : {},
+        maxPrice ? { price: { lte: maxPrice } } : {},
+        q
+          ? {
+            OR: [
+              { title: { contains: q, mode: "insensitive" } },
+              { city: { contains: q, mode: "insensitive" } },
+              { state: { contains: q, mode: "insensitive" } },
+              { address: { contains: q, mode: "insensitive" } },
+            ],
+          }
+          : {},
+      ],
+    },
+  });
+
+  const properties = raw.map(mapProperty);
+
+  // 📊 SORTING
+  const sorted = (() => {
+    const list = [...properties];
+
+    if (sortBy === "price_asc") {
+      return list.sort((a, b) => a.price - b.price);
+    }
+
+    if (sortBy === "price_desc") {
+      return list.sort((a, b) => b.price - a.price);
+    }
+
+    return list;
+  })();
+
+  // 💾 STORE IN CACHE
+  // STORE IN CACHE
+  //setCache(cacheKey, sorted);
+
+  const nearbyBaseState =
+    state !== "all"
+      ? state
+      : sorted.find((property) => property.state)?.state || "";
+
+  return <SearchLayout properties={sorted} nearbyBaseState={nearbyBaseState} />;
+}
