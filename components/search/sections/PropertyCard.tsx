@@ -8,8 +8,6 @@ import { BiArea } from "react-icons/bi";
 import { MdVerified } from "react-icons/md";
 import { Property } from "@/lib/searchTypes";
 
-const MAX_IMAGES = 20;
-
 export default function PropertyCard({ property }: { property: Property }) {
     const [imgIndex, setImgIndex] = useState(1);
     const [imgError, setImgError] = useState<Record<number, boolean>>({});
@@ -17,6 +15,7 @@ export default function PropertyCard({ property }: { property: Property }) {
     const touchEndX = useRef<number>(0);
 
     const folder = property.imageFolder || property.propertyId;
+    const totalImages = Math.max(property.imageCount || property.images?.length || 1, 1);
 
     const imgSrc = imgError[imgIndex]
         ? `/property-images/${folder}/1.webp`
@@ -31,7 +30,7 @@ export default function PropertyCard({ property }: { property: Property }) {
     const next = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        setImgIndex((i) => Math.min(MAX_IMAGES, i + 1));
+        setImgIndex((i) => Math.min(totalImages, i + 1));
     };
 
     const handleTouchStart = (e: React.TouchEvent) => {
@@ -43,7 +42,7 @@ export default function PropertyCard({ property }: { property: Property }) {
         const diff = touchStartX.current - touchEndX.current;
         if (Math.abs(diff) > 40) {
             if (diff > 0) {
-                setImgIndex((i) => Math.min(MAX_IMAGES, i + 1));
+                setImgIndex((i) => Math.min(totalImages, i + 1));
             } else {
                 setImgIndex((i) => Math.max(1, i - 1));
             }
@@ -80,7 +79,7 @@ export default function PropertyCard({ property }: { property: Property }) {
 
                 {/* IMAGE COUNTER */}
                 <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-0.5 rounded-full">
-                    {imgIndex} / {MAX_IMAGES}
+                    {imgIndex} / {totalImages}
                 </div>
 
                 {/* ARROWS — desktop only */}

@@ -1,10 +1,20 @@
+import imageCounts from "@/data/property-image-counts.json";
 import { Property } from "@/lib/searchTypes";
 
+function getImageCount(imageFolder?: string | null) {
+    if (!imageFolder) return 1;
+
+    return (imageCounts as Record<string, number>)[imageFolder] || 1;
+}
+
 export function mapProperty(p: any): Property {
+    const imageFolder = p.imageFolder ?? p.propertyId;
+
     return {
         id: p.id,
         propertyId: p.propertyId,
-        imageFolder: p.imageFolder ?? p.propertyId,
+        imageFolder,
+        imageCount: p.imageCount ?? getImageCount(imageFolder),
 
         title: p.title,
 

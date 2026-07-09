@@ -11,6 +11,7 @@ type Property = {
   id: string;
   propertyId: string;
   imageFolder: string;
+  imageCount: number;
   title: string;
   price: number;
   beds: number;
@@ -23,24 +24,23 @@ type Property = {
   state: string;
 };
 
-const TOTAL_IMAGES = 20;
-
 function PropertyCard({ property }: { property: Property }) {
   const [imgIndex, setImgIndex] = useState(1);
   const [imgError, setImgError] = useState<Record<number, boolean>>({});
 
   const folder = property.imageFolder || property.propertyId;
+  const totalImages = Math.max(property.imageCount || 1, 1);
 
   const prev = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setImgIndex((i) => (i <= 1 ? TOTAL_IMAGES : i - 1));
+    setImgIndex((i) => (i <= 1 ? totalImages : i - 1));
   };
 
   const next = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setImgIndex((i) => (i >= TOTAL_IMAGES ? 1 : i + 1));
+    setImgIndex((i) => (i >= totalImages ? 1 : i + 1));
   };
 
   const imgSrc = imgError[imgIndex]

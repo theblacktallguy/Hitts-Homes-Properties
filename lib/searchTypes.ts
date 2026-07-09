@@ -11,6 +11,7 @@ export type Property = {
   id: string;
   propertyId: string;
   imageFolder: string;
+  imageCount: number;
 
   title: string;
 
