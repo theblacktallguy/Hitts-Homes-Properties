@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { getLocationGroups } from "@/lib/locationData";
+import type { LocationGroup } from "@/lib/locationData";
 
+type Props = {
+    locations: LocationGroup[];
+};
 
-export default function StateExplorer() {
-
-    const locations = getLocationGroups();
+export default function StateExplorer({ locations }: Props) {
 
     const [openState, setOpenState] = useState<string | null>(null);
 
@@ -102,7 +103,7 @@ export default function StateExplorer() {
 
                                                 <Link
                                                     key={city.city}
-                                                    href={`/search?q=${encodeURIComponent(city.city)}`}
+                                                    href={`/search?q=${encodeURIComponent(city.city)}&state=${encodeURIComponent(location.state)}`}
                                                     className="
                                             flex
                                             justify-between
@@ -132,7 +133,7 @@ export default function StateExplorer() {
 
 
                                         <Link
-                                            href={`/search?q=${encodeURIComponent(location.state)}`}
+                                            href={`/search?state=${encodeURIComponent(location.state)}`}
                                             className="
                                         mt-5
                                         block

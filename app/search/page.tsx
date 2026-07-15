@@ -1,12 +1,36 @@
 import { prisma } from "@/lib/prisma";
 import SearchLayout from "@/components/search/layout/SearchLayout";
 import { mapProperty } from "@/lib/mappers/mapProperty";
+import { normalizeStateName } from "@/lib/stateNames";
 
 import {
   getCache,
   setCache,
   createCacheKey,
 } from "@/lib/searchCache";
+
+function parseLocationQuery(query: string) {
+  const normalized = query.trim().replace(/\s+/g, " ");
+
+  const [city, state, ...rest] = normalized.includes(",")
+    ? normalized
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean)
+    : [
+      normalized.replace(/\s+[A-Z]{2}$/i, "").trim(),
+      normalized.match(/\s+([A-Z]{2})$/i)?.[1] || "",
+    ];
+
+  if (!city || !state || rest.length > 0) {
+    return null;
+  }
+
+  return {
+    city,
+    state: normalizeStateName(state),
+  };
+}
 
 export default async function SearchPage(
   props: {
@@ -18,11 +42,12 @@ export default async function SearchPage(
   const q = searchParams.q || "";
   const status = searchParams.status || "all";
   const type = searchParams.type || "all";
-  const state = searchParams.state || "all";
+  const state = searchParams.state ? normalizeStateName(searchParams.state) : "all";
   const sortBy = searchParams.sortBy || "relevance";
   const petFriendly = searchParams.petFriendly === "true";
   const minPrice = searchParams.minPrice ? parseInt(searchParams.minPrice) : null;
   const maxPrice = searchParams.maxPrice ? parseInt(searchParams.maxPrice) : null;
+  const locationQuery = q ? parseLocationQuery(q) : null;
 
   // 🧠 CREATE CACHE KEY
   const cacheKey = createCacheKey({
@@ -54,7 +79,14 @@ export default async function SearchPage(
         state !== "all" ? { state: { equals: state, mode: "insensitive" } } : {},
         minPrice ? { price: { gte: minPrice } } : {},
         maxPrice ? { price: { lte: maxPrice } } : {},
-        q
+        locationQuery
+          ? {
+            AND: [
+              { city: { contains: locationQuery.city, mode: "insensitive" } },
+              { state: { equals: locationQuery.state, mode: "insensitive" } },
+            ],
+          }
+          : q
           ? {
             OR: [
               { title: { contains: q, mode: "insensitive" } },
