@@ -2,6 +2,7 @@ import Header from "@/components/layout/Header";
 import Hero from "@/components/home/Hero";
 import ExploreCategories from "@/components/home/ExploreCategories";
 import FeaturedListings from "@/components/home/FeaturedListings";
+import RecentlyAddedListings from "@/components/home/RecentlyAddedListings";
 import ExploreByState from "@/components/home/ExploreByState";
 import StatsBanner from "@/components/home/StatsBanner";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
@@ -12,8 +13,28 @@ import FinalCTA from "@/components/home/FinalCTA";
 import { prisma } from "@/lib/prisma";
 import { mapProperty } from "@/lib/mappers/mapProperty";
 
+export const dynamic = "force-dynamic";
+
 function pickRandom<T>(arr: T[], count: number): T[] {
   return [...arr].sort(() => Math.random() - 0.5).slice(0, count);
+}
+
+async function getRecentlyAdded() {
+  try {
+    const properties = await prisma.property.findMany({
+      where: { status: "active" },
+      take: 10,
+      orderBy: [
+        { updatedAt: "desc" },
+        { createdAt: "desc" },
+      ],
+    });
+
+    return properties.map(mapProperty);
+  } catch (error) {
+    console.error("Recently added query failed:", error);
+    return [];
+  }
 }
 
 async function getFeatured() {
@@ -41,7 +62,10 @@ async function getFeatured() {
 }
 
 export default async function Home() {
-  const { forSale, forRent } = await getFeatured();
+  const [{ forSale, forRent }, recentlyAdded] = await Promise.all([
+    getFeatured(),
+    getRecentlyAdded(),
+  ]);
 
   const selected = [];
   const sale = pickRandom(forSale, 6);
@@ -58,6 +82,7 @@ export default async function Home() {
       <Header />
       <Hero />
       <ExploreCategories />
+      <RecentlyAddedListings properties={recentlyAdded} />
       <FeaturedListings properties={featured} />
       <ExploreByState />
       <StatsBanner />

@@ -6,6 +6,8 @@ import LocationCTA from "@/components/locations/LocationCTA";
 import { prisma } from "@/lib/prisma";
 import type { LocationGroup } from "@/lib/locationData";
 
+export const dynamic = "force-dynamic";
+
 async function getLocationGroups(): Promise<LocationGroup[]> {
     const properties = await prisma.property.findMany({
         where: {
