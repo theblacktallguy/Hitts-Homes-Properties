@@ -31,7 +31,7 @@ function RecentlyAddedCard({ property }: { property: Property }) {
   return (
     <Link
       href={`/property/${property.propertyId}`}
-      className="group shrink-0 w-[82vw] sm:w-80 md:w-72 overflow-hidden rounded-2xl bg-white shadow-md transition-shadow duration-300 hover:shadow-xl"
+      className="group shrink-0 w-[62vw] sm:w-72 md:w-72 overflow-hidden rounded-2xl bg-white shadow-md transition-shadow duration-300 hover:shadow-xl"
     >
       <div className="relative h-48 w-full overflow-hidden bg-gray-100">
         <img
@@ -134,7 +134,7 @@ export default function RecentlyAddedListings({
   if (!properties.length) return null;
 
   return (
-    <section className="bg-white py-14">
+    <section className="bg-gray-100 py-14">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
         <div className="mb-8 flex items-end justify-between">
           <div>
