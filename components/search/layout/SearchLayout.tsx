@@ -1,4 +1,4 @@
-import SearchHeader from "./SearchHeader";
+import SearchHeader from "../../layout/SearchHeader";
 import FilterBar from "../sections/FilterBar";
 import ResultsContextHeader from "../sections/ResultsContextHeader";
 import ListingsSection from "../sections/ListingsSection";

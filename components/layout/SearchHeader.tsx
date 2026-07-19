@@ -3,13 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRouteLoading } from "@/hooks/useRouteLoading";
 import { FiArrowLeft, FiSearch } from "react-icons/fi";
 import Image from "next/image";
 
 export default function SearchHeader() {
   const router = useRouter();
-  const { setLoading } = useRouteLoading();
   const [input, setInput] = useState("");
 
   const handleSearch = () => {
@@ -24,7 +22,6 @@ export default function SearchHeader() {
       if (current === target) return;
     }
 
-    setLoading(true);
     router.push(target);
   };
 
@@ -38,7 +35,7 @@ export default function SearchHeader() {
         <button
           type="button"
           onClick={() => router.back()}
-          className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition shrink-0"
+          className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-600 bg-gray-100 transition shrink-0"
         >
           <FiArrowLeft className="text-xl text-black" />
         </button>
@@ -47,7 +44,7 @@ export default function SearchHeader() {
         <Link
           href="/"
         >
-          <div className="relative w-8 h-8 shrink-0">
+          <div className="relative w-12 h-10 shrink-0">
             <Image
               src="/logo/logobg.png"
               alt="Hitts Homes"
@@ -59,12 +56,12 @@ export default function SearchHeader() {
         </Link>
 
         {/* SEARCH BAR */}
-        <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-2" style={{ width: "55%" }}>
+        <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-2" style={{ width: "40%" }}>
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Search city, address, ZIP..."
+            placeholder="Search city, state"
             className="flex-1 outline-none text-sm text-black bg-transparent"
           />
           <button
@@ -89,7 +86,7 @@ export default function SearchHeader() {
             onClick={() => router.back()}
             className="flex items-center gap-2 text-sm font-medium text-black hover:text-black transition group"
           >
-            <span className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 group-hover:border-gray-400 transition">
+            <span className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 group-hover:bg-gray-600 bg-gray-100 transition">
               <FiArrowLeft className="text-base" />
             </span>
             Back

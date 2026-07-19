@@ -1,21 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useRouteLoading } from "@/hooks/useRouteLoading";
+import { useRouter } from "next/navigation";
 
 export default function SearchBar() {
     const [query, setQuery] = useState("");
-    const { setLoading } = useRouteLoading();
+    const router = useRouter();
 
     const handleSearch = (value?: string) => {
         const finalQuery = (value ?? query).trim();
 
-        console.log("HANDLE SEARCH", finalQuery);
-
         if (!finalQuery) return;
 
-        setLoading(true);
-        window.location.href = `/search?q=${encodeURIComponent(finalQuery)}`;
+        router.push(`/search?q=${encodeURIComponent(finalQuery)}`);
     };
 
     return (
@@ -26,7 +23,6 @@ export default function SearchBar() {
                 action="/search"
                 method="GET"
                 onSubmit={(e) => {
-                    console.log("FORM SUBMIT", query);
                     e.preventDefault();
                     handleSearch();
                 }}

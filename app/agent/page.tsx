@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FiPhone, FiMail, FiStar, FiMapPin, FiAward, FiCheckCircle } from "react-icons/fi";
-import InHeader from "@/components/layout/InHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 
 
 const AGENT = {
@@ -172,7 +172,7 @@ function ContactForm() {
 export default function AgentPage() {
     return (
         <main className="bg-gray-50 min-h-screen">
-            <InHeader />
+            <SearchHeader />
 
             {/* HERO — DESKTOP */}
             <div className="hidden md:block relative w-full h-[60vh] overflow-hidden">
@@ -353,7 +353,7 @@ export default function AgentPage() {
             </div>
 
             {/* MAIN CONTENT */}
-            <div className="max-w-6xl mx-auto px-4 md:px-8 py-5">
+            <div className="max-w-6xl mx-auto px-4 md:px-8 ">
                 <div className="grid md:grid-cols-3 gap-8">
 
                     {/* LEFT — main content */}

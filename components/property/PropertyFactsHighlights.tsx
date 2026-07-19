@@ -10,9 +10,12 @@ import {
   FaSnowflake,
 } from "react-icons/fa";
 import { MdCalendarMonth, MdLocalLaundryService } from "react-icons/md";
+import Link from "next/link";
 
 type Props = {
   property: any;
+  applyHref: string;
+  requestTourHref: string;
 };
 
 function hasValue(value: any) {
@@ -27,7 +30,11 @@ function getListingTypes(listingType: any) {
   return Array.isArray(listingType) ? listingType : [listingType].filter(Boolean);
 }
 
-export default function PropertyFactsHighlights({ property }: Props) {
+export default function PropertyFactsHighlights({
+  property,
+  applyHref,
+  requestTourHref,
+}: Props) {
   const listingTypes = getListingTypes(property.listingType);
 
   const factsFeatures = property.factsFeatures ?? {};
@@ -127,6 +134,21 @@ export default function PropertyFactsHighlights({ property }: Props) {
             Additional fees, deposits, closing costs, or application charges may vary by property.
           </p>
         </div>
+      </div>
+
+      <div className="mb-7 grid grid-cols-2 gap-3 md:hidden">
+        <Link
+          href={applyHref}
+          className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#0B1F3A] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#132e52]"
+        >
+          Apply Now
+        </Link>
+        <Link
+          href={requestTourHref}
+          className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[#0B1F3A] bg-white px-3 py-3 text-center text-sm font-semibold text-[#0B1F3A] transition hover:bg-slate-50"
+        >
+          Request Tour
+        </Link>
       </div>
 
       {facts.length > 0 && (

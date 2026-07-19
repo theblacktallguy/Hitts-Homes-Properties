@@ -1,5 +1,5 @@
 import Link from "next/link";
-import InHeader from "@/components/layout/InHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 
 export const metadata = {
     title: "Relocation Resources | Hitts Homes & Properties",
@@ -58,7 +58,7 @@ const relatedLinks = [
 export default function RelocationResourcesPage() {
     return (
         <main>
-            <InHeader />
+            <SearchHeader />
 
             <section className="
             relative

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import InHeader from "@/components/layout/InHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 import ApplyNowHero from "@/components/forms/apply-now/ApplyNowHero";
 import ApplyNowForm from "@/components/forms/apply-now/ApplyNowForm";
 
@@ -15,7 +15,7 @@ export const metadata = {
 export default function ApplyNowPage() {
     return (
         <main>
-            <InHeader />
+            <SearchHeader />
 
             <ApplyNowHero />
 

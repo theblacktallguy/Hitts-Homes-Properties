@@ -5,15 +5,18 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 type Props = {
   imageFolder: string;
+  listingType: string;
   total?: number;
 };
 
 export default function PropertyImageCarousel({
   imageFolder,
+  listingType,
   total = 1,
 }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(1);
+  const isRent = listingType === "rent";
 
   const scroll = (dir: "left" | "right") => {
     const el = scrollRef.current;
@@ -53,6 +56,16 @@ export default function PropertyImageCarousel({
         height: "clamp(320px, 55vh, 520px)",
       }}
     >
+      <span
+        className={`absolute left-4 top-4 z-30 rounded-full border px-3 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm ${
+          isRent
+            ? "border-blue-200 bg-blue-50/90 text-blue-800"
+            : "border-emerald-200 bg-emerald-50/90 text-emerald-800"
+        }`}
+      >
+        {isRent ? "For Rent" : "For Sale"}
+      </span>
+
       <button
         onClick={() => scroll("left")}
         className="flex absolute left-3 top-1/2 -translate-y-1/2 z-10

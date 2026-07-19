@@ -1,5 +1,5 @@
 import Link from "next/link";
-import InHeader from "@/components/layout/InHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 
 export const metadata = {
     title: "Why Choose Us | Hitts Homes & Properties",
@@ -46,7 +46,7 @@ const serviceHighlights = [
 export default function WhyChooseUsPage() {
     return (
         <main>
-            <InHeader />
+            <SearchHeader />
 
             <section className="
             relative

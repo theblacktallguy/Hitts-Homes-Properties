@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { MdVerified } from "react-icons/md";
 
 type Props = {
@@ -11,6 +12,8 @@ type Props = {
     rentPrice: number | null;
     salePrice: number | null;
     propertyId: string | number;
+    applyHref: string;
+    requestTourHref: string;
 };
 
 export default function PropertyHeroHeader({
@@ -22,6 +25,8 @@ export default function PropertyHeroHeader({
     rentPrice,
     salePrice,
     propertyId,
+    applyHref,
+    requestTourHref,
 }: Props) {
     const isRent = listingType?.includes("rent");
 
@@ -40,46 +45,46 @@ export default function PropertyHeroHeader({
                 <MdVerified className="text-blue-500 text-xl mt-1" />
             </div>
 
-            {/* PRICE */}
-            <div className="mt-3">
-                <p className="text-2xl md:text-4xl font-bold text-gray-900">
-                    ${price?.toLocaleString()}
-                    {isRent && (
-                        <span className="text-base font-medium text-gray-500 ml-1">
-                            /mo
-                        </span>
-                    )}
-                </p>
-
-                {isRent && (
-                    <p className="text-sm text-gray-500 mt-1">
-                        Total monthly price
+            <div className="mt-5 grid gap-6 md:grid-cols-[7fr_3fr] md:items-start">
+                <div>
+                    <p className="text-2xl md:text-4xl font-bold text-gray-900">
+                        ${price?.toLocaleString()}
+                        {isRent && (
+                            <span className="ml-1 text-base font-medium text-gray-500">
+                                /mo
+                            </span>
+                        )}
                     </p>
-                )}
-            </div>
 
-            {/* LOCATION + STATUS */}
-            <div className="mt-3 flex flex-row md:flex-row md:items-center justify-between gap-20">
+                    {isRent && (
+                        <p className="mt-1 text-sm text-gray-500">
+                            Total monthly price
+                        </p>
+                    )}
 
-                <p className="text-sm text-gray-500">
-                    {city}, {state} • {address}
-                </p>
+                    <p className="mt-3 text-sm text-gray-500">
+                        {city}, {state} • {address}
+                    </p>
 
-                <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold w-fit ${isRent
-                            ? "bg-blue-600 text-white"
-                            : "bg-green-600 text-white"
-                        }`}
-                >
-                    {isRent ? "For Rent" : "For Sale"}
-                </span>
-            </div>
+                    <p className="mt-3 text-xs font-medium text-gray-400">
+                        Property ID: <span className="text-gray-600">{propertyId}</span>
+                    </p>
+                </div>
 
-            {/* PROPERTY ID */}
-            <div className="mt-3">
-                <p className="text-xs font-medium text-gray-400">
-                    Property ID: <span className="text-gray-600">{propertyId}</span>
-                </p>
+                <div className="hidden md:grid gap-3">
+                    <Link
+                        href={applyHref}
+                        className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#0B1F3A] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#132e52]"
+                    >
+                        Apply Now
+                    </Link>
+                    <Link
+                        href={requestTourHref}
+                        className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[#0B1F3A] bg-white px-5 py-3 text-sm font-semibold text-[#0B1F3A] transition hover:bg-slate-50"
+                    >
+                        Request Tour
+                    </Link>
+                </div>
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import InHeader from "@/components/layout/InHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 
 export const metadata = {
     title: "Privacy Policy | Hitts Homes & Properties",
@@ -74,7 +74,7 @@ const relatedLinks = [
 export default function PrivacyPage() {
     return (
         <main>
-            <InHeader />
+            <SearchHeader />
 
             <section className="
             relative

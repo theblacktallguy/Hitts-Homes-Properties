@@ -169,7 +169,7 @@ export default function MenuPage() {
 
             <MobileMenuHero />
 
-            <div className="px-4 py-6 space-y-6">
+            <div className="px-4 py-4 space-y-4">
 
                 {menuSections.map((section) => (
                     <MobileMenuSection

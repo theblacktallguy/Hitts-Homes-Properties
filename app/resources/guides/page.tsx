@@ -1,5 +1,5 @@
 import Link from "next/link";
-import InHeader from "@/components/layout/InHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 
 export const metadata = {
     title: "Buyer & Renter Guides | Hitts Homes & Properties",
@@ -62,7 +62,7 @@ const comparisonTips = [
 export default function GuidesPage() {
     return (
         <main>
-            <InHeader />
+            <SearchHeader />
 
             <section className="
             relative

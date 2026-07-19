@@ -1,4 +1,4 @@
-import InHeader from "@/components/layout/InHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 import AffordabilityCalculator from "@/components/tools/AffordabilityCalculator";
 
 export const metadata = {
@@ -10,7 +10,7 @@ export const metadata = {
 export default function AffordabilityPage() {
     return (
         <main>
-            <InHeader />
+            <SearchHeader />
 
             <section className="
             bg-gradient-to-br

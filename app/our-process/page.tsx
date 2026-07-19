@@ -1,5 +1,5 @@
 import Link from "next/link";
-import InHeader from "@/components/layout/InHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 
 export const metadata = {
     title: "Our Process | Hitts Homes & Properties",
@@ -56,7 +56,7 @@ const pathways = [
 export default function OurProcessPage() {
     return (
         <main>
-            <InHeader />
+            <SearchHeader />
 
             <section className="
             bg-gradient-to-br

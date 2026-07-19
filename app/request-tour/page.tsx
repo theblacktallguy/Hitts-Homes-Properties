@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import InHeader from "@/components/layout/InHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 import RequestTourHero from "@/components/forms/request-tour/RequestTourHero";
 import RequestTourForm from "@/components/forms/request-tour/RequestTourForm";
 
@@ -15,7 +15,7 @@ export const metadata = {
 export default function RequestTourPage() {
     return (
         <main>
-            <InHeader />
+            <SearchHeader />
 
             <RequestTourHero />
 

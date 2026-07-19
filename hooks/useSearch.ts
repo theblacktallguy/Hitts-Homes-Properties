@@ -2,11 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useRouteLoading } from "@/hooks/useRouteLoading";
 
 export function useSearch(defaultSuggestions: string[]) {
   const router = useRouter();
-  const { setLoading } = useRouteLoading();
 
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
@@ -23,7 +21,6 @@ export function useSearch(defaultSuggestions: string[]) {
       if (current === target) return;
     }
 
-    setLoading(true);
     router.push(target);
   };
 

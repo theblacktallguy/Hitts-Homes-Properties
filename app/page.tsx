@@ -61,10 +61,22 @@ async function getFeatured() {
   return { forSale: [], forRent: [] };
 }
 
+async function getListedPropertyCount() {
+  try {
+    return await prisma.property.count({
+      where: { status: "active" },
+    });
+  } catch (error) {
+    console.error("Property count query failed:", error);
+    return 0;
+  }
+}
+
 export default async function Home() {
-  const [{ forSale, forRent }, recentlyAdded] = await Promise.all([
+  const [{ forSale, forRent }, recentlyAdded, listedPropertyCount] = await Promise.all([
     getFeatured(),
     getRecentlyAdded(),
+    getListedPropertyCount(),
   ]);
 
   const selected = [];
@@ -85,7 +97,7 @@ export default async function Home() {
       <RecentlyAddedListings properties={recentlyAdded} />
       <FeaturedListings properties={featured} />
       <ExploreByState />
-      <StatsBanner />
+      <StatsBanner propertyCount={listedPropertyCount} />
       <WhyChooseUs />
       <AgentSection />
       <Testimonials />

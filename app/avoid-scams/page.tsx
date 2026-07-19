@@ -1,5 +1,5 @@
 import Link from "next/link";
-import InHeader from "@/components/layout/InHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 
 export const metadata = {
     title: "Avoid Scams | Hitts Homes & Properties",
@@ -66,7 +66,7 @@ const officialActions = [
 export default function AvoidScamsPage() {
     return (
         <main>
-            <InHeader />
+            <SearchHeader />
 
             <section className="
             relative

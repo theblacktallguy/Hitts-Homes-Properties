@@ -1,4 +1,4 @@
-import InHeader from "@/components/layout/InHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 import LocationHero from "@/components/locations/LocationHero";
 import StateExplorer from "@/components/locations/StateExplorer";
 import WhyChooseUs from "@/components/locations/WhyChooseUs";
@@ -57,7 +57,7 @@ export default async function LocationsPage() {
 
     return (
         <main className="min-h-screen bg-white">
-            <InHeader />
+            <SearchHeader />
 
             <LocationHero />
 

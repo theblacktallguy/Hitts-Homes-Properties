@@ -21,7 +21,7 @@ export default function MobileMenuSection({
 
         <section>
 
-            <h2 className="text-sm font-bold py-5 text-gray-900 mb-3">
+            <h2 className="text-sm font-bold text-gray-900 mb-3">
                 {title}
             </h2>
 

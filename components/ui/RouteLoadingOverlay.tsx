@@ -8,6 +8,7 @@ export default function RouteLoadingOverlay() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { loading, setLoading } = useRouteLoading();
+  const routeKey = `${pathname}?${searchParams.toString()}`;
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -44,6 +45,13 @@ export default function RouteLoadingOverlay() {
 
       if (nextUrl.origin !== window.location.origin) return;
 
+      if (
+        nextUrl.pathname === "/search" ||
+        nextUrl.pathname.startsWith("/property/")
+      ) {
+        return;
+      }
+
       const currentUrl = new URL(window.location.href);
 
       if (
@@ -56,16 +64,16 @@ export default function RouteLoadingOverlay() {
       setLoading(true);
     };
 
-    document.addEventListener("click", handleClick);
+    document.addEventListener("click", handleClick, true);
 
     return () => {
-      document.removeEventListener("click", handleClick);
+      document.removeEventListener("click", handleClick, true);
     };
   }, [setLoading]);
 
   useEffect(() => {
     setLoading(false);
-  }, [pathname, searchParams, setLoading]);
+  }, [routeKey, setLoading]);
 
   useEffect(() => {
     if (!loading) return;
@@ -82,19 +90,10 @@ export default function RouteLoadingOverlay() {
   if (!loading) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white/95 px-6 pt-[calc(env(safe-area-inset-top)+48px)] backdrop-blur-sm">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#0B1F3A] shadow-xl">
-        <div className="h-8 w-8 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-      </div>
-
-      <p className="mt-6 text-center text-lg font-semibold text-[#0B1F3A]">
-        Loading your next page
-      </p>
-
-      <div className="mt-4 flex gap-2">
-        <span className="h-2.5 w-2.5 rounded-full bg-[#C8A45D] animate-bounce" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#C8A45D] animate-bounce [animation-delay:150ms]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#C8A45D] animate-bounce [animation-delay:300ms]" />
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white/10 px-6 pt-[calc(env(safe-area-inset-top)+48px)] backdrop-blur-[2px]">
+      <div className="flex items-center gap-3 rounded-full border border-white/70 bg-white/70 px-5 py-3 text-sm font-medium text-[#0B1F3A] shadow-sm">
+        <span className="h-5 w-5 rounded-full border-2 border-[#0B1F3A]/25 border-t-[#0B1F3A] animate-spin" />
+        Preparing your page
       </div>
     </div>
   );

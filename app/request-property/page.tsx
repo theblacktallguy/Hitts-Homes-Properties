@@ -1,5 +1,5 @@
 import RequestPropertyHero from "@/components/forms/property-request/RequestPropertyHero";
-import InHeader from "@/components/layout/InHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 import PropertyRequestForm from "@/components/forms/property-request/PropertyRequestForm";
 
 
@@ -13,7 +13,7 @@ export const metadata = {
 export default function RequestPropertyPage() {
     return (
         <main>
-            <InHeader />
+            <SearchHeader />
 
             <RequestPropertyHero />
 

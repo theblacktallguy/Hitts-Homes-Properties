@@ -3,7 +3,7 @@ import path from "path";
 import { notFound } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
-import SearchHeader from "@/components/search/layout/SearchHeader";
+import SearchHeader from "@/components/layout/SearchHeader";
 import PropertyImageCarousel from "@/components/property/PropertyImageCarousel";
 import PropertyHeroHeader from "@/components/property/PropertyHeroHeader";
 import PropertyFactsHighlights from "@/components/property/PropertyFactsHighlights";
@@ -51,6 +51,19 @@ export default async function PropertyPage({ params }: PageProps) {
   }
 
   const imageCount = getPropertyImageCount(property.imageFolder);
+  const propertyAddress = [
+    property.address,
+    `${property.city}, ${property.state}${property.zipCode ? ` ${property.zipCode}` : ""}`,
+  ]
+    .filter(Boolean)
+    .join(", ");
+  const propertyQuery = new URLSearchParams({
+    propertyId: property.propertyId,
+    title: property.title,
+    address: propertyAddress,
+  }).toString();
+  const applyHref = `/apply?${propertyQuery}`;
+  const requestTourHref = `/request-tour?${propertyQuery}`;
 
   const similarProperties = await prisma.property.findMany({
     where: {
@@ -74,6 +87,7 @@ export default async function PropertyPage({ params }: PageProps) {
       <div className="max-w-6xl mx-auto md:px-6">
         <PropertyImageCarousel
           imageFolder={property.imageFolder}
+          listingType={property.listingType}
           total={imageCount}
         />
 
@@ -90,9 +104,15 @@ export default async function PropertyPage({ params }: PageProps) {
           rentPrice={property.listingType === "rent" ? property.price : null}
           salePrice={property.listingType === "sale" ? property.price : null}
           propertyId={property.propertyId}
+          applyHref={applyHref}
+          requestTourHref={requestTourHref}
         />
 
-        <PropertyFactsHighlights property={property} />
+        <PropertyFactsHighlights
+          property={property}
+          applyHref={applyHref}
+          requestTourHref={requestTourHref}
+        />
 
         <PropertyAboutActivity property={property} />
 

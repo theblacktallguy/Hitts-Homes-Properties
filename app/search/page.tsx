@@ -43,7 +43,6 @@ export default async function SearchPage(
   const status = searchParams.status || "all";
   const type = searchParams.type || "all";
   const state = searchParams.state ? normalizeStateName(searchParams.state) : "all";
-  const sortBy = searchParams.sortBy || "relevance";
   const petFriendly = searchParams.petFriendly === "true";
   const minPrice = searchParams.minPrice ? parseInt(searchParams.minPrice) : null;
   const maxPrice = searchParams.maxPrice ? parseInt(searchParams.maxPrice) : null;
@@ -54,7 +53,6 @@ export default async function SearchPage(
     q,
     status,
     type,
-    sortBy,
   });
 
   // ⚡ CHECK CACHE FIRST
@@ -98,24 +96,13 @@ export default async function SearchPage(
           : {},
       ],
     },
+    orderBy: [
+      { createdAt: "desc" },
+      { updatedAt: "desc" },
+    ],
   });
 
-  const properties = raw.map(mapProperty);
-
-  // 📊 SORTING
-  const sorted = (() => {
-    const list = [...properties];
-
-    if (sortBy === "price_asc") {
-      return list.sort((a, b) => a.price - b.price);
-    }
-
-    if (sortBy === "price_desc") {
-      return list.sort((a, b) => b.price - a.price);
-    }
-
-    return list;
-  })();
+  const sorted = raw.map(mapProperty);
 
   // 💾 STORE IN CACHE
   // STORE IN CACHE

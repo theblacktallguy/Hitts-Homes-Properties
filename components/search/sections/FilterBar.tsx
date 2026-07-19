@@ -22,12 +22,6 @@ const propertyTypes = [
   { label: "Duplex", value: "Duplex" },
 ];
 
-const sortOptions = [
-  { label: "Relevance", value: "relevance" },
-  { label: "Price: Low → High", value: "price_asc" },
-  { label: "Price: High → Low", value: "price_desc" },
-];
-
 export default function FilterBar() {
   const { filters, updateFilters } = useSearchParamsState();
 
@@ -121,23 +115,6 @@ export default function FilterBar() {
           );
         })}
 
-        <div className="w-px h-5 bg-gray-200 mx-2 shrink-0" />
-
-        {/* SORT */}
-        <select
-          value={filters.sortBy}
-          onChange={(e) => updateFilters({ sortBy: e.target.value })}
-          className="
-            px-3 py-2 rounded-full border text-sm bg-white text-black border-gray-200 hover:border-gray-400
-            outline-none shrink-0
-          "
-        >
-          {sortOptions.map((item) => (
-            <option key={item.value} value={item.value}>
-              {item.label}
-            </option>
-          ))}
-        </select>
       </div>
     </div>
   );

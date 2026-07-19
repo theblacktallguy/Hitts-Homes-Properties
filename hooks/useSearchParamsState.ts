@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import { useRouteLoading } from "@/hooks/useRouteLoading";
 
 export type SearchFilters = {
   q: string;
@@ -16,7 +15,6 @@ export type SearchFilters = {
 export function useSearchParamsState() {
   const router = useRouter();
   const params = useSearchParams();
-  const { setLoading } = useRouteLoading();
 
   const filters: SearchFilters = useMemo(() => {
     return {
@@ -49,7 +47,6 @@ export function useSearchParamsState() {
       if (current === target) return;
     }
 
-    setLoading(true);
     router.push(target);
   };
 

@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { FiHome, FiMap, FiShield, FiSearch } from "react-icons/fi";
 
-const STATS = [
+const getStats = (propertyCount: number) => [
     {
         icon: FiHome,
-        value: 512,
-        suffix: "+",
+        value: propertyCount,
+        suffix: "",
         label: "Properties Listed",
         description: "Verified homes across the US",
     },
@@ -63,7 +63,7 @@ function StatCard({
     index,
     animate,
 }: {
-    stat: typeof STATS[0];
+    stat: ReturnType<typeof getStats>[number];
     index: number;
     animate: boolean;
 }) {
@@ -103,7 +103,8 @@ function StatCard({
     );
 }
 
-export default function StatsBanner() {
+export default function StatsBanner({ propertyCount }: { propertyCount: number }) {
+    const stats = getStats(propertyCount);
     const ref = useRef<HTMLDivElement>(null);
     const [animate, setAnimate] = useState(false);
 
@@ -145,7 +146,7 @@ export default function StatsBanner() {
                 {/* STATS GRID */}
                 {/* DESKTOP — 4 columns with dividers */}
                 <div className="hidden md:grid grid-cols-4 divide-x divide-gray-200">
-                    {STATS.map((stat, index) => (
+                    {stats.map((stat, index) => (
                         <StatCard
                             key={stat.label}
                             stat={stat}
@@ -157,7 +158,7 @@ export default function StatsBanner() {
 
                 {/* MOBILE — zigzag, always visible */}
                 <div className="md:hidden flex flex-col gap-3 text-center ">
-                    {STATS.map((stat, index) => (
+                    {stats.map((stat, index) => (
                         <div
                             key={stat.label}
                             style={{
@@ -174,7 +175,7 @@ export default function StatsBanner() {
                                 }}
                             >
                                 <p style={{ color: "white", fontWeight: "bold", fontSize: "24px" }}>
-                                    {stat.value === 0 ? "Free" : stat.value}{stat.suffix}
+                                    {stat.value === 0 ? "Free" : stat.value.toLocaleString()}{stat.suffix}
                                 </p>
                                 <p style={{ color: "white", fontSize: "14px" }}>{stat.label}</p>
                             </div>
