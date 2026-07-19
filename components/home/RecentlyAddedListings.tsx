@@ -53,10 +53,10 @@ function RecentlyAddedCard({ property }: { property: Property }) {
             New
           </span>
           <span
-            className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+            className={`rounded-full border px-2.5 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm ${
               property.status === "rent"
-                ? "bg-blue-600 text-white"
-                : "bg-green-600 text-white"
+                ? "border-blue-200 bg-blue-50/90 text-blue-800"
+                : "border-emerald-200 bg-emerald-50/90 text-emerald-800"
             }`}
           >
             {property.status === "rent" ? "For Rent" : "For Sale"}

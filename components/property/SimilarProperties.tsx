@@ -76,7 +76,7 @@ export default function SimilarProperties({ properties }: Props) {
                                 />
 
                                 <span
-                                    className={`absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-bold text-white ${isRent ? "bg-blue-600" : "bg-green-600"
+                                    className={`absolute left-3 top-3 rounded-full border px-3 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm ${isRent ? "border-blue-200 bg-blue-50/90 text-blue-800" : "border-emerald-200 bg-emerald-50/90 text-emerald-800"
                                         }`}
                                 >
                                     {isRent ? "For Rent" : "For Sale"}

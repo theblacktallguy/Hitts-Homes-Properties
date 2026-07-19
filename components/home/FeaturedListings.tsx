@@ -69,10 +69,10 @@ function PropertyCard({ property }: { property: Property }) {
 
         {/* BADGE */}
         <div className="absolute top-3 left-3">
-          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+          <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm ${
             property.status === "rent"
-              ? "bg-blue-600 text-white"
-              : "bg-green-600 text-white"
+              ? "border-blue-200 bg-blue-50/90 text-blue-800"
+              : "border-emerald-200 bg-emerald-50/90 text-emerald-800"
           }`}>
             {property.status === "rent" ? "For Rent" : "For Sale"}
           </span>

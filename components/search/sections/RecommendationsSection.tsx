@@ -165,9 +165,9 @@ export default function RecommendationsSection({
                     className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
                   />
                   <div className="absolute top-3 left-3">
-                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${p.status === "rent"
-                        ? "bg-blue-600 text-white"
-                        : "bg-green-600 text-white"
+                    <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm ${p.status === "rent"
+                        ? "border-blue-200 bg-blue-50/90 text-blue-800"
+                        : "border-emerald-200 bg-emerald-50/90 text-emerald-800"
                       }`}>
                       {p.status === "rent" ? "For Rent" : "For Sale"}
                     </span>
