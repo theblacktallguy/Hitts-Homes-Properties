@@ -234,7 +234,7 @@ export default function LocationPreference({
                 </span>
 
 
-                I'm open to property recommendations
+                I&apos;m open to property recommendations
 
 
             </button>

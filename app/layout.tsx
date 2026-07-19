@@ -8,6 +8,7 @@ import Footer from "@/components/layout/Footer";
 
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://hittshomes.vercel.app"),
   title: "Hitts Homes & Properties",
   description: "Search verified homes, apartments, and properties for rent and sale with Hitts Homes & Properties.",
   openGraph: {

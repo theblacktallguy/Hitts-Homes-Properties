@@ -39,7 +39,7 @@ export default function ResultsContextHeader({ total }: Props) {
         <>
           {typeLabel} {statusLabel} in{" "}
           <span className="font-semibold text-black">
-            "{location}"
+            &ldquo;{location}&rdquo;
           </span>
         </>
       );

@@ -155,7 +155,7 @@ export default function Testimonials() {
                     }}
                 >
                     <div style={{ fontSize: "80px", color: "white", lineHeight: "1", fontFamily: "Georgia, serif", marginBottom: "8px" }}>
-                        "
+                        &ldquo;
                     </div>
                     <p style={{ color: "rgba(255,255,255,0.9)", fontSize: "18px", lineHeight: "1.7", fontWeight: "300", margin: "0 auto", maxWidth: "600px" }}>
                         {t.quote}
@@ -216,7 +216,7 @@ export default function Testimonials() {
                         >
                             {/* QUOTE MARK */}
                             <div style={{ fontSize: "40px", color: "white", fontFamily: "Georgia, serif", lineHeight: "1", marginBottom: "8px", alignItems: "center", display: "flex", justifyContent: "center" }}>
-                                "
+                                &ldquo;
                             </div>
 
                             {/* QUOTE TEXT */}

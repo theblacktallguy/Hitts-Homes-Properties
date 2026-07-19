@@ -7,6 +7,10 @@ import { FiChevronLeft, FiChevronRight, FiMapPin } from "react-icons/fi";
 import { IoBedOutline, IoWaterOutline } from "react-icons/io5";
 import { BiArea } from "react-icons/bi";
 import { MdVerified } from "react-icons/md";
+import {
+  getLocalPropertyImageUrl,
+  getPropertyImageUrl,
+} from "@/lib/propertyImages";
 
 type Property = {
   id: string;
@@ -33,7 +37,7 @@ export default function RecommendationsSection({
   const searchParams = useSearchParams();
   const state = searchParams.get("state") || baseState;
   const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadedState, setLoadedState] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(true);
@@ -63,14 +67,13 @@ export default function RecommendationsSection({
   }, [properties]);
 
   useEffect(() => {
-    setLoading(true);
     fetch(`/api/nearby?state=${encodeURIComponent(state)}`)
       .then((r) => r.json())
       .then((data) => {
         setProperties(data);
-        setLoading(false);
+        setLoadedState(state);
       })
-      .catch(() => setLoading(false));
+      .catch(() => setLoadedState(state));
   }, [state]);
 
   const scroll = (dir: "left" | "right") => {
@@ -81,6 +84,7 @@ export default function RecommendationsSection({
   };
 
   const neighborStates = [...new Set(properties.map((p) => p.state))];
+  const loading = loadedState !== state;
 
   if (isMobile) return null;
 
@@ -151,8 +155,13 @@ export default function RecommendationsSection({
               >
                 <div className="relative w-full h-40 bg-gray-100 overflow-hidden">
                   <img
-                    src={`/property-images/${p.imageFolder}/1.webp`}
+                    src={getPropertyImageUrl(p.imageFolder)}
                     alt={p.title}
+                    onError={(event) => {
+                      event.currentTarget.src = getLocalPropertyImageUrl(
+                        p.imageFolder
+                      );
+                    }}
                     className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
                   />
                   <div className="absolute top-3 left-3">

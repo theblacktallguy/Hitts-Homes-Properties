@@ -41,7 +41,7 @@ export default function PropertyRequestCTA() {
 
           <div>
             <h2 className="text-xl md:text-2xl font-bold text-gray-900">
-              Can't find what you're looking for?
+              Can&apos;t find what you&apos;re looking for?
             </h2>
 
             <p className="mt-2 text-sm md:text-base text-gray-500 max-w-xl">

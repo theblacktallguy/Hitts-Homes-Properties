@@ -72,15 +72,17 @@ export default function PropertyHeroHeader({
                 </div>
 
                 <div className="hidden md:grid gap-3">
-                    <Link
-                        href={applyHref}
-                        className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#0B1F3A] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#132e52]"
-                    >
-                        Apply Now
-                    </Link>
+                    {isRent && (
+                        <Link
+                            href={applyHref}
+                            className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#0B1F3A] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#132e52]"
+                        >
+                            Apply Now
+                        </Link>
+                    )}
                     <Link
                         href={requestTourHref}
-                        className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[#0B1F3A] bg-white px-5 py-3 text-sm font-semibold text-[#0B1F3A] transition hover:bg-slate-50"
+                        className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#0B1F3A] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#132e52]"
                     >
                         Request Tour
                     </Link>

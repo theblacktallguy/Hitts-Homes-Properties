@@ -17,10 +17,10 @@ export async function GET(
     );
 
     const file = fs.readFileSync(filePath, "utf-8");
-    const properties = JSON.parse(file);
+    const properties: Array<{ propertyId: string }> = JSON.parse(file);
 
     const property = properties.find(
-      (p: any) => p.propertyId === propertyId
+      (propertyItem) => propertyItem.propertyId === propertyId
     );
 
     if (!property) {
@@ -31,7 +31,7 @@ export async function GET(
     }
 
     return NextResponse.json(property);
-  } catch (err) {
+  } catch {
     return NextResponse.json(
       { error: "Server error" },
       { status: 500 }

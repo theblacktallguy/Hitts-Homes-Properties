@@ -55,7 +55,7 @@ export default function FilterBar() {
             <span>
               Results for{" "}
               <span className="text-black font-medium">
-                "{filters.q}"
+                &ldquo;{filters.q}&rdquo;
               </span>
             </span>
           ) : (

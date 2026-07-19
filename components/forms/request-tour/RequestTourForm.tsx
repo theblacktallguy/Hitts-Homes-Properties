@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -38,6 +38,24 @@ const initialData: RequestTourData = {
     source: "general",
 };
 
+function getInitialData(searchParams: { get: (name: string) => string | null }): RequestTourData {
+    const propertyId = searchParams.get("propertyId") || "";
+    const propertyTitle = searchParams.get("title") || "";
+    const propertyAddress = searchParams.get("address") || "";
+
+    if (!propertyId && !propertyTitle && !propertyAddress) {
+        return initialData;
+    }
+
+    return {
+        ...initialData,
+        propertyId,
+        propertyTitle,
+        propertyAddress,
+        source: "property-page",
+    };
+}
+
 const steps = [
     {
         id: 1,
@@ -60,7 +78,7 @@ export default function RequestTourForm() {
     const searchParams = useSearchParams();
 
     const [currentStep, setCurrentStep] = useState(0);
-    const [formData, setFormData] = useState(initialData);
+    const [formData, setFormData] = useState(() => getInitialData(searchParams));
     const [errors, setErrors] = useState<FormErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -68,46 +86,12 @@ export default function RequestTourForm() {
     const CurrentStepComponent =
         steps[currentStep].component;
 
-    useEffect(() => {
-        const propertyId =
-            searchParams.get("propertyId") || "";
-
-        const propertyTitle =
-            searchParams.get("title") || "";
-
-        const propertyAddress =
-            searchParams.get("address") || "";
-
-        const hasPropertyDetails =
-            propertyId || propertyTitle || propertyAddress;
-
-        if (!hasPropertyDetails) {
-            return;
-        }
-
-        setFormData((prev) => ({
-            ...prev,
-            propertyId,
-            propertyTitle,
-            propertyAddress,
-            source: "property-page",
-        }));
-    }, [searchParams]);
-
     function validateStep() {
-        let schema: any;
+        const schemas = [stepSchemas.contactInfo, stepSchemas.tourDetails];
+        const schema = schemas[currentStep];
 
-        switch (currentStep) {
-            case 0:
-                schema = stepSchemas.contactInfo;
-                break;
-
-            case 1:
-                schema = stepSchemas.tourDetails;
-                break;
-
-            case 2:
-                return true;
+        if (!schema) {
+            return true;
         }
 
         const result = schema.safeParse(formData);
@@ -115,12 +99,10 @@ export default function RequestTourForm() {
         if (!result.success) {
             const fieldErrors: FormErrors = {};
 
-            result.error.issues.forEach((issue: any) => {
-                const field =
-                    issue.path[0] as string;
+            result.error.issues.forEach((issue) => {
+                const field = String(issue.path[0]);
 
-                fieldErrors[field] =
-                    issue.message;
+                fieldErrors[field] = issue.message;
             });
 
             setErrors(fieldErrors);

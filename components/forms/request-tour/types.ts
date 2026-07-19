@@ -6,6 +6,6 @@ export type RequestTourStepProps = {
     errors: FormErrors;
     onChange: (
         field: keyof RequestTourData,
-        value: any
+        value: RequestTourData[keyof RequestTourData]
     ) => void;
 };

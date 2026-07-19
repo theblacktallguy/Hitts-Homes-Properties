@@ -7,6 +7,10 @@ import { IoBedOutline, IoWaterOutline } from "react-icons/io5";
 import { BiArea } from "react-icons/bi";
 import { MdVerified } from "react-icons/md";
 import { Property } from "@/lib/searchTypes";
+import {
+    getLocalPropertyImageUrl,
+    getPropertyImageUrl,
+} from "@/lib/propertyImages";
 
 export default function PropertyCard({ property }: { property: Property }) {
     const [imgIndex, setImgIndex] = useState(1);
@@ -18,8 +22,8 @@ export default function PropertyCard({ property }: { property: Property }) {
     const totalImages = Math.max(property.imageCount || property.images?.length || 1, 1);
 
     const imgSrc = imgError[imgIndex]
-        ? `/property-images/${folder}/1.webp`
-        : `/property-images/${folder}/${imgIndex}.webp`;
+        ? getLocalPropertyImageUrl(folder)
+        : getPropertyImageUrl(folder, imgIndex);
 
     const prev = (e: React.MouseEvent) => {
         e.preventDefault();

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 
 import ProgressIndicator from "./ProgressIndicator";
 import FormNavigation from "./FormNavigation";
@@ -122,10 +123,6 @@ export default function PropertyRequestForm() {
   }
 
   function next() {
-    console.log("Continue clicked");
-    console.log("Current step:", currentStep);
-    console.log("Form data:", formData);
-
     const valid = validateStep();
 
     if (!valid) {
@@ -150,34 +147,17 @@ export default function PropertyRequestForm() {
 
   function validateStep() {
 
-    let schema: any;
+    const schemas = [
+      stepSchemas.personalInfo,
+      stepSchemas.propertyGoal,
+      stepSchemas.location,
+      stepSchemas.propertyDetails,
+      stepSchemas.finalDetails,
+    ];
+    const schema = schemas[currentStep];
 
-
-    switch (currentStep) {
-
-      case 0:
-        schema = stepSchemas.personalInfo;
-        break;
-
-      case 1:
-        schema = stepSchemas.propertyGoal;
-        break;
-
-      case 2:
-        schema = stepSchemas.location;
-        break;
-
-      case 3:
-        schema = stepSchemas.propertyDetails;
-        break;
-
-      case 4:
-        schema = stepSchemas.finalDetails;
-        break;
-
-      case 5:
-        return true;
-
+    if (!schema) {
+      return true;
     }
 
 
@@ -189,21 +169,15 @@ export default function PropertyRequestForm() {
       const fieldErrors: FormErrors = {};
 
 
-      result.error.issues.forEach((issue: any) => {
+      result.error.issues.forEach((issue) => {
+        const field = String(issue.path[0]);
 
-        const field =
-          issue.path[0] as string;
-
-
-        fieldErrors[field] =
-          issue.message;
+        fieldErrors[field] = issue.message;
 
       });
 
 
       setErrors(fieldErrors);
-
-      console.log("Validation failed:", fieldErrors);
 
       return false;
 
@@ -211,9 +185,6 @@ export default function PropertyRequestForm() {
 
 
     setErrors({});
-
-    console.log("Validation passed");
-
 
     return true;
 
@@ -271,7 +242,7 @@ export default function PropertyRequestForm() {
             Thank you for sharing your property preferences. Our team will review your request and contact you soon.
           </p>
 
-          <a
+          <Link
             href="/"
             className="
           mt-8
@@ -291,7 +262,7 @@ export default function PropertyRequestForm() {
           "
           >
             Back to Home
-          </a>
+          </Link>
 
         </div>
 
@@ -349,7 +320,7 @@ export default function PropertyRequestForm() {
 
                 errors={errors}
 
-                onChange={(field: string, value: any) => {
+                onChange={(field, value) => {
 
                   setFormData(prev => ({
                     ...prev,

@@ -36,6 +36,7 @@ export default function PropertyFactsHighlights({
   requestTourHref,
 }: Props) {
   const listingTypes = getListingTypes(property.listingType);
+  const isRent = listingTypes.includes("rent");
 
   const factsFeatures = property.factsFeatures ?? {};
   const interior = factsFeatures.interior ?? {};
@@ -136,16 +137,18 @@ export default function PropertyFactsHighlights({
         </div>
       </div>
 
-      <div className="mb-7 grid grid-cols-2 gap-3 md:hidden">
-        <Link
-          href={applyHref}
-          className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#0B1F3A] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#132e52]"
-        >
-          Apply Now
-        </Link>
+      <div className={`mb-7 grid gap-3 md:hidden ${isRent ? "grid-cols-2" : "grid-cols-1"}`}>
+        {isRent && (
+          <Link
+            href={applyHref}
+            className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#0B1F3A] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#132e52]"
+          >
+            Apply Now
+          </Link>
+        )}
         <Link
           href={requestTourHref}
-          className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[#0B1F3A] bg-white px-3 py-3 text-center text-sm font-semibold text-[#0B1F3A] transition hover:bg-slate-50"
+          className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#0B1F3A] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#132e52]"
         >
           Request Tour
         </Link>

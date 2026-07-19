@@ -1,8 +1,10 @@
 import fs from "fs";
 import path from "path";
 import { notFound } from "next/navigation";
+import imageCounts from "@/data/property-image-counts.json";
 
 import { prisma } from "@/lib/prisma";
+import { getCloudinaryPropertyImageCount } from "@/lib/cloudinary";
 import SearchHeader from "@/components/layout/SearchHeader";
 import PropertyImageCarousel from "@/components/property/PropertyImageCarousel";
 import PropertyHeroHeader from "@/components/property/PropertyHeroHeader";
@@ -18,8 +20,11 @@ type PageProps = {
   }>;
 };
 
-function getPropertyImageCount(imageFolder: string | null) {
+async function getPropertyImageCount(imageFolder: string | null) {
   if (!imageFolder) return 1;
+
+  const recordedCount = (imageCounts as Record<string, number>)[imageFolder];
+  if (recordedCount) return recordedCount;
 
   const folderPath = path.join(
     process.cwd(),
@@ -28,7 +33,9 @@ function getPropertyImageCount(imageFolder: string | null) {
     imageFolder
   );
 
-  if (!fs.existsSync(folderPath)) return 1;
+  if (!fs.existsSync(folderPath)) {
+    return (await getCloudinaryPropertyImageCount(imageFolder)) || 1;
+  }
 
   const count = fs
     .readdirSync(folderPath)
@@ -50,7 +57,7 @@ export default async function PropertyPage({ params }: PageProps) {
     notFound();
   }
 
-  const imageCount = getPropertyImageCount(property.imageFolder);
+  const imageCount = await getPropertyImageCount(property.imageFolder);
   const propertyAddress = [
     property.address,
     `${property.city}, ${property.state}${property.zipCode ? ` ${property.zipCode}` : ""}`,

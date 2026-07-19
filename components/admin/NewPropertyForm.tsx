@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type PreviewProperty = {
@@ -236,6 +236,11 @@ export default function NewPropertyForm() {
   const [promptCopied, setPromptCopied] = useState(false);
   const [isCheckingId, setIsCheckingId] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [imageUploadError, setImageUploadError] = useState("");
+  const [uploadedImageCount, setUploadedImageCount] = useState(0);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const normalizedInputId = propertyIdInput.trim().toUpperCase();
 
@@ -391,6 +396,92 @@ export default function NewPropertyForm() {
     }
   }
 
+  function selectImages(files: FileList | null) {
+    const images = Array.from(files || []).sort((first, second) =>
+      first.name.localeCompare(second.name, undefined, { numeric: true })
+    );
+
+    if (images.length > 20) {
+      setSelectedImages([]);
+      setImageUploadError("Select up to 20 images at once.");
+      return;
+    }
+
+    if (images.some((image) => !image.type.startsWith("image/"))) {
+      setSelectedImages([]);
+      setImageUploadError("Select image files only.");
+      return;
+    }
+
+    setSelectedImages(images);
+    setImageUploadError("");
+    setUploadedImageCount(0);
+  }
+
+  async function uploadImages() {
+    if (!successPropertyId || selectedImages.length === 0) return;
+
+    setIsUploadingImages(true);
+    setImageUploadError("");
+
+    try {
+      for (const [index, image] of selectedImages.entries()) {
+        const signatureResponse = await fetch(
+          "/api/admin/properties/images/signature",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              propertyId: successPropertyId,
+              imageIndex: index + 1,
+            }),
+          }
+        );
+        const signature = await signatureResponse.json();
+
+        if (!signatureResponse.ok) {
+          throw new Error(signature.error || "Unable to prepare image upload");
+        }
+
+        const uploadData = new FormData();
+        uploadData.append("file", image);
+        uploadData.append("api_key", signature.apiKey);
+        uploadData.append("timestamp", String(signature.timestamp));
+        uploadData.append("signature", signature.signature);
+        uploadData.append("public_id", signature.publicId);
+        uploadData.append("overwrite", "true");
+        uploadData.append("format", "webp");
+
+        const uploadResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`,
+          {
+            method: "POST",
+            body: uploadData,
+          }
+        );
+        const uploadResult = await uploadResponse.json();
+
+        if (!uploadResponse.ok) {
+          throw new Error(uploadResult.error?.message || "Unable to upload image");
+        }
+
+        setUploadedImageCount(index + 1);
+      }
+
+      setSelectedImages([]);
+      if (imageInputRef.current) imageInputRef.current.value = "";
+      router.refresh();
+    } catch (uploadError) {
+      setImageUploadError(
+        uploadError instanceof Error
+          ? uploadError.message
+          : "Unable to upload property images"
+      );
+    } finally {
+      setIsUploadingImages(false);
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {successPropertyId && (
@@ -402,15 +493,57 @@ export default function NewPropertyForm() {
             {successPropertyId} was added successfully
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-green-800">
-            Before publishing or pushing to production, create this image folder
-            and add the property images:
+            Select all property images at once. They will upload to Cloudinary
+            automatically in the order shown below.
           </p>
-          <div className="mt-4 rounded-2xl bg-white px-4 py-3 font-mono text-sm font-bold text-[#0B1F3A]">
-            public/property-images/{successPropertyId}/1.webp
+
+          <input
+            ref={imageInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={(event) => selectImages(event.target.files)}
+            className="sr-only"
+          />
+
+          <div className="mt-4 flex flex-col gap-3 md:flex-row">
+            <button
+              type="button"
+              onClick={() => imageInputRef.current?.click()}
+              disabled={isUploadingImages}
+              className="rounded-2xl border border-green-300 bg-white px-5 py-3 text-sm font-bold text-green-800 transition hover:bg-green-100 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Select Property Images
+            </button>
+            <button
+              type="button"
+              onClick={uploadImages}
+              disabled={selectedImages.length === 0 || isUploadingImages}
+              className="rounded-2xl bg-[#0B1F3A] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#132e52] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isUploadingImages
+                ? "Uploading Images..."
+                : `Upload ${selectedImages.length || ""} Image${selectedImages.length === 1 ? "" : "s"}`}
+            </button>
           </div>
-          <p className="mt-3 text-sm leading-6 text-green-800">
-            Additional images should be named 2.webp, 3.webp, 4.webp, and so on.
-          </p>
+
+          {selectedImages.length > 0 && (
+            <p className="mt-3 text-sm font-medium text-green-800">
+              {selectedImages.length} image{selectedImages.length === 1 ? "" : "s"} selected: {selectedImages.slice(0, 3).map((image) => image.name).join(", ")}{selectedImages.length > 3 ? "…" : ""}
+            </p>
+          )}
+
+          {uploadedImageCount > 0 && (
+            <p className="mt-3 text-sm font-semibold text-green-800">
+              {uploadedImageCount} image{uploadedImageCount === 1 ? "" : "s"} uploaded to Cloudinary.
+            </p>
+          )}
+
+          {imageUploadError && (
+            <p className="mt-3 text-sm font-semibold text-red-700">
+              {imageUploadError}
+            </p>
+          )}
 
           <div className="mt-5 flex flex-col gap-3 md:flex-row">
             <button
@@ -422,7 +555,12 @@ export default function NewPropertyForm() {
             </button>
             <button
               type="button"
-              onClick={() => setSuccessPropertyId("")}
+              onClick={() => {
+                setSuccessPropertyId("");
+                setSelectedImages([]);
+                setUploadedImageCount(0);
+                setImageUploadError("");
+              }}
               className="rounded-2xl border border-green-300 bg-white px-5 py-3 text-sm font-bold text-green-800"
             >
               Import Another
@@ -546,10 +684,10 @@ export default function NewPropertyForm() {
           />
 
           <div className="mt-4 rounded-2xl bg-[#FFF7E4] px-4 py-3 text-sm font-medium leading-6 text-[#6F5200]">
-            Do not include a trailing comma after the final closing brace. Image
-            folder should be exactly:
+            Do not include a trailing comma after the final closing brace. The
+            Cloudinary image folder should be exactly:
             <span className="font-bold">
-              {" "}public/property-images/{checkedPropertyId}
+              {" "}hitts-homes/properties/{checkedPropertyId}
             </span>
           </div>
         </section>

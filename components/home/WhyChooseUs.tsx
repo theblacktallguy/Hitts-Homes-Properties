@@ -244,7 +244,7 @@ export default function WhyChooseUs() {
             Why Choose Hitts Homes & Properties?
           </h2>
           <p className="mt-2 text-gray-500 text-sm md:text-base">
-            We do things differently — here's how
+            We do things differently — here&apos;s how
           </p>
         </div>
 

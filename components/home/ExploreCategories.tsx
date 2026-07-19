@@ -115,22 +115,22 @@ export default function ExploreCategories() {
                     </div>
 
                     {/* ARROWS — desktop only */}
-                    <div className="hidden md:flex items-center gap-2 shrink-0 ml-4">
+                    <div className="hidden shrink-0 items-center gap-2 md:flex">
                         <button
                             type="button"
                             onClick={() => scroll("left")}
                             disabled={!canLeft}
-                            className="w-10 h-10 rounded-full border border-gray-500 flex items-center justify-center hover:bg-gray-800 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/50 border border-gray-300 transition hover:bg-gray-100 hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
                         >
-                            <FiChevronLeft className="text-xl dark:text-gray-300" />
+                            <FiChevronLeft className="text-xl" />
                         </button>
                         <button
                             type="button"
                             onClick={() => scroll("right")}
                             disabled={!canRight}
-                            className="w-10 h-10 rounded-full border border-gray-500 flex items-center justify-center hover:bg-gray-800 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/50 border border-gray-300 transition hover:bg-gray-100 hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
                         >
-                            <FiChevronRight className="text-xl dark:text-gray-300" />
+                            <FiChevronRight className="text-xl" />
                         </button>
                     </div>
                 </div>

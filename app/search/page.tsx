@@ -3,12 +3,6 @@ import SearchLayout from "@/components/search/layout/SearchLayout";
 import { mapProperty } from "@/lib/mappers/mapProperty";
 import { normalizeStateName } from "@/lib/stateNames";
 
-import {
-  getCache,
-  setCache,
-  createCacheKey,
-} from "@/lib/searchCache";
-
 function parseLocationQuery(query: string) {
   const normalized = query.trim().replace(/\s+/g, " ");
 
@@ -47,19 +41,6 @@ export default async function SearchPage(
   const minPrice = searchParams.minPrice ? parseInt(searchParams.minPrice) : null;
   const maxPrice = searchParams.maxPrice ? parseInt(searchParams.maxPrice) : null;
   const locationQuery = q ? parseLocationQuery(q) : null;
-
-  // 🧠 CREATE CACHE KEY
-  const cacheKey = createCacheKey({
-    q,
-    status,
-    type,
-  });
-
-  // ⚡ CHECK CACHE FIRST
-  /*const cached = getCache(cacheKey);
-  if (cached) {
-      return <SearchLayout properties={cached as any} />;
-  }*/
 
   // 🗄️ DATABASE QUERY
   const raw = await prisma.property.findMany({

@@ -6,6 +6,6 @@ export type ApplyNowStepProps = {
     errors: FormErrors;
     onChange: (
         field: keyof ApplyNowData,
-        value: any
+        value: ApplyNowData[keyof ApplyNowData]
     ) => void;
 };

@@ -6,6 +6,10 @@ import { FiChevronLeft, FiChevronRight, FiMapPin } from "react-icons/fi";
 import { IoBedOutline, IoWaterOutline } from "react-icons/io5";
 import { BiArea } from "react-icons/bi";
 import { MdVerified } from "react-icons/md";
+import {
+  getLocalPropertyImageUrl,
+  getPropertyImageUrl,
+} from "@/lib/propertyImages";
 
 type Property = {
   id: string;
@@ -44,8 +48,8 @@ function PropertyCard({ property }: { property: Property }) {
   };
 
   const imgSrc = imgError[imgIndex]
-    ? `/property-images/${folder}/1.webp`
-    : `/property-images/${folder}/${imgIndex}.webp`;
+    ? getLocalPropertyImageUrl(folder)
+    : getPropertyImageUrl(folder, imgIndex);
 
   return (
     <Link
@@ -184,12 +188,12 @@ export default function FeaturedListings({ properties }: { properties: Property[
             </p>
           </div>
 
-          <div className="hidden md:flex items-center gap-2 shrink-0 ml-4">
+          <div className="hidden shrink-0 items-center gap-2 md:flex">
             <button
               type="button"
               onClick={() => scroll("left")}
               disabled={!canLeft}
-              className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-black/50 border border-gray-300 transition hover:bg-gray-100 hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
             >
               <FiChevronLeft className="text-xl" />
             </button>
@@ -197,7 +201,7 @@ export default function FeaturedListings({ properties }: { properties: Property[
               type="button"
               onClick={() => scroll("right")}
               disabled={!canRight}
-              className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-black/50 border border-gray-300 transition hover:bg-gray-100 hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
             >
               <FiChevronRight className="text-xl" />
             </button>

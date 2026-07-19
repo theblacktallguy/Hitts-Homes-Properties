@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { getPropertyImageUrl } from "@/lib/propertyImages";
 
 export default function PropertyImageGallery({
   propertyId,
@@ -16,7 +17,7 @@ export default function PropertyImageGallery({
       const found: string[] = [];
 
       for (let i = 1; i <= 20; i++) {
-        const path = `/property-images/${propertyId}/${i}.webp`;
+        const path = getPropertyImageUrl(propertyId, i);
 
         const exists = await new Promise<boolean>((resolve) => {
           const img = new window.Image();

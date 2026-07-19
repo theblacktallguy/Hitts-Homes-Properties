@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FaBath, FaBed, FaRulerCombined } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
+import PropertyImageWithFallback from "./PropertyImageWithFallback";
 
 
 type SimilarProperty = {
@@ -68,8 +69,8 @@ export default function SimilarProperties({ properties }: Props) {
                             }}
                         >
                             <div className="relative h-48 overflow-hidden bg-gray-200">
-                                <img
-                                    src={`/property-images/${property.imageFolder}/1.webp`}
+                                <PropertyImageWithFallback
+                                    imageFolder={property.imageFolder}
                                     alt={property.title}
                                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                                 />

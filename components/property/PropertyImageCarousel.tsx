@@ -1,7 +1,11 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiX } from "react-icons/fi";
+import {
+  getLocalPropertyImageUrl,
+  getPropertyImageUrl,
+} from "@/lib/propertyImages";
 
 type Props = {
   imageFolder: string;
@@ -15,7 +19,9 @@ export default function PropertyImageCarousel({
   total = 1,
 }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef(0);
   const [activeIndex, setActiveIndex] = useState(1);
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
   const isRent = listingType === "rent";
 
   const scroll = (dir: "left" | "right") => {
@@ -47,6 +53,18 @@ export default function PropertyImageCarousel({
 
     const index = Math.round(el.scrollLeft / el.clientWidth) + 1;
     setActiveIndex(Math.min(Math.max(index, 1), total));
+  };
+
+  const changeViewerImage = (direction: "left" | "right") => {
+    setViewerIndex((currentIndex) => {
+      if (!currentIndex) return 1;
+
+      if (direction === "left") {
+        return currentIndex === 1 ? total : currentIndex - 1;
+      }
+
+      return currentIndex === total ? 1 : currentIndex + 1;
+    });
   };
 
   return (
@@ -96,15 +114,24 @@ export default function PropertyImageCarousel({
         }}
       >
         {Array.from({ length: total }).map((_, i) => (
-          <div
+          <button
+            type="button"
             key={i}
             className="w-full min-w-full shrink-0 snap-center overflow-hidden"
+            onClick={() => setViewerIndex(i + 1)}
+            aria-label={`Open property image ${i + 1}`}
             style={{
               height: "100%",
             }}
           >
             <img
-              src={`/property-images/${imageFolder}/${i + 1}.webp`}
+              src={getPropertyImageUrl(imageFolder, i + 1)}
+              onError={(event) => {
+                event.currentTarget.src = getLocalPropertyImageUrl(
+                  imageFolder,
+                  i + 1
+                );
+              }}
               className="block"
               style={{
                 width: "100%",
@@ -115,13 +142,87 @@ export default function PropertyImageCarousel({
               }}
               alt={`property-${i + 1}`}
             />
-          </div>
+          </button>
         ))}
       </div>
 
       <div className="absolute top-3 right-3 z-30 bg-black text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg">
         {activeIndex} / {total}
       </div>
+
+      {viewerIndex && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Property image viewer"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          onClick={() => setViewerIndex(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setViewerIndex(null)}
+            className="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25"
+            aria-label="Close image viewer"
+          >
+            <FiX className="text-2xl" />
+          </button>
+
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              changeViewerImage("left");
+            }}
+            className="absolute left-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25 md:left-8"
+            aria-label="Previous image"
+          >
+            <FiChevronLeft className="text-2xl" />
+          </button>
+
+          <div
+            className="relative flex h-full w-full items-center justify-center"
+            onClick={(event) => event.stopPropagation()}
+            onTouchStart={(event) => {
+              touchStartX.current = event.touches[0].clientX;
+            }}
+            onTouchEnd={(event) => {
+              const difference = touchStartX.current - event.changedTouches[0].clientX;
+
+              if (Math.abs(difference) > 40) {
+                changeViewerImage(difference > 0 ? "right" : "left");
+              }
+            }}
+          >
+            <img
+              src={getPropertyImageUrl(imageFolder, viewerIndex)}
+              onError={(event) => {
+                event.currentTarget.src = getLocalPropertyImageUrl(
+                  imageFolder,
+                  viewerIndex
+                );
+              }}
+              alt={`Property image ${viewerIndex} of ${total}`}
+              className="max-h-full max-w-full object-contain"
+            />
+
+            <span className="absolute bottom-5 rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white">
+              {viewerIndex} / {total}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              changeViewerImage("right");
+            }}
+            className="absolute right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25 md:right-8"
+            aria-label="Next image"
+          >
+            <FiChevronRight className="text-2xl" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

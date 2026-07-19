@@ -8,6 +8,6 @@ export type PropertyStepProps = {
 
     onChange: (
         field: keyof PropertyRequestData,
-        value: any
+        value: PropertyRequestData[keyof PropertyRequestData]
     ) => void;
 };
