@@ -9,8 +9,15 @@ import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hittshomes.com"),
-  title: "Hitts Homes & Properties",
+  title: {
+    default: "Hitts Homes & Properties",
+    template: "%s | Hitts Homes & Properties",
+  },
   description: "Search verified homes, apartments, and properties for rent and sale with Hitts Homes & Properties.",
+  keywords: ["homes for rent", "homes for sale", "real estate", "apartments", "property tours", "Hitts Homes"],
+  alternates: { canonical: "/" },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
+  verification: { google: process.env.GOOGLE_SITE_VERIFICATION },
   openGraph: {
     title: "Hitts Homes & Properties",
     description: "Search verified homes, apartments, and properties for rent and sale with Hitts Homes & Properties.",
@@ -18,7 +25,7 @@ export const metadata: Metadata = {
     siteName: "Hitts Homes & Properties",
     images: [
       {
-        url: "https://hittshomes.com/banner/menu-hero.jpg", // 👈 full URL
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "Hitts Homes & Properties",
@@ -30,7 +37,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Hitts Homes & Properties",
     description: "Search verified homes, apartments, and properties for rent and sale with Hitts Homes & Properties.",
-    images: ["https://hittshomes.com/banner/menu-hero.jpg"], // 👈 full URL
+    images: ["/opengraph-image"],
   },
 };
 

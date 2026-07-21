@@ -66,3 +66,14 @@ export async function getCloudinaryPropertyImageCount(imageFolder: string) {
     return 0;
   }
 }
+
+export async function deletePropertyImages(imageFolder: string) {
+  if (!configureCloudinary()) {
+    throw new Error("Cloudinary is not configured");
+  }
+
+  await cloudinary.api.delete_resources_by_prefix(
+    `hitts-homes/properties/${imageFolder}/`,
+    { resource_type: "image" }
+  );
+}

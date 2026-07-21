@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import { stepSchemas } from "@/components/forms/request-tour/validation";
+import { prisma } from "@/lib/prisma";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -29,6 +30,22 @@ export async function POST(req: Request) {
         }
 
         const data = result.data;
+
+        await prisma.tourRequest.create({
+            data: {
+                fullName: data.fullName,
+                email: data.email,
+                phone: data.phone,
+                propertyId: data.propertyId,
+                propertyTitle: data.propertyTitle,
+                propertyAddress: data.propertyAddress,
+                tourType: data.tourType,
+                preferredDate: data.preferredDate,
+                preferredTime: data.preferredTime,
+                alternateDate: data.alternateDate || null,
+                alternateTime: data.alternateTime || null,
+            },
+        });
 
         await resend.emails.send({
             from: "onboarding@resend.dev",

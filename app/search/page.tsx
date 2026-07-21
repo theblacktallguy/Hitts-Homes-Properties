@@ -41,6 +41,10 @@ export default async function SearchPage(
   const minPrice = searchParams.minPrice ? parseInt(searchParams.minPrice) : null;
   const maxPrice = searchParams.maxPrice ? parseInt(searchParams.maxPrice) : null;
   const locationQuery = q ? parseLocationQuery(q) : null;
+  const searchTerms = q
+    .split(/[\s,]+/)
+    .map((term) => term.trim())
+    .filter((term) => term.length > 1);
 
   // 🗄️ DATABASE QUERY
   const raw = await prisma.property.findMany({
@@ -67,12 +71,15 @@ export default async function SearchPage(
           }
           : q
           ? {
-            OR: [
-              { title: { contains: q, mode: "insensitive" } },
-              { city: { contains: q, mode: "insensitive" } },
-              { state: { contains: q, mode: "insensitive" } },
-              { address: { contains: q, mode: "insensitive" } },
-            ],
+            AND: searchTerms.map((term) => ({
+              OR: [
+                { title: { contains: term, mode: "insensitive" } },
+                { address: { contains: term, mode: "insensitive" } },
+                { city: { contains: term, mode: "insensitive" } },
+                { state: { contains: term, mode: "insensitive" } },
+                { zipCode: { contains: term, mode: "insensitive" } },
+              ],
+            })),
           }
           : {},
       ],

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { createPropertyImageUploadSignature } from "@/lib/cloudinary";
 
 export async function POST(request: Request) {
@@ -10,15 +9,6 @@ export async function POST(request: Request) {
 
     if (!normalizedPropertyId || !Number.isInteger(normalizedImageIndex) || normalizedImageIndex < 1 || normalizedImageIndex > 20) {
       return NextResponse.json({ error: "Invalid image upload request" }, { status: 400 });
-    }
-
-    const property = await prisma.property.findUnique({
-      where: { propertyId: normalizedPropertyId },
-      select: { propertyId: true },
-    });
-
-    if (!property) {
-      return NextResponse.json({ error: "Property was not found" }, { status: 404 });
     }
 
     const signature = await createPropertyImageUploadSignature(

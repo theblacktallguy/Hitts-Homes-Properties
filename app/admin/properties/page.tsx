@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import DeletePropertyButton from "@/components/admin/DeletePropertyButton";
 
 export const metadata = {
   title: "Admin Properties | Hitts Homes",
@@ -57,6 +58,12 @@ export default async function AdminPropertiesPage({
                 },
                 {
                   state: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  address: {
                     contains: q,
                     mode: "insensitive",
                   },
@@ -186,12 +193,11 @@ export default async function AdminPropertiesPage({
                     </span>
                   </td>
                   <td className="px-5 py-4">
-                    <Link
-                      href={`/property/${property.propertyId}`}
-                      className="text-sm font-bold text-[#0B1F3A] transition hover:text-[#C8A45D]"
-                    >
-                      View
-                    </Link>
+                    <div className="flex items-center gap-3">
+                      <Link href={`/property/${property.propertyId}`} className="text-sm font-bold text-[#0B1F3A] transition hover:text-[#C8A45D]">View</Link>
+                      <Link href={`/admin/properties/${property.propertyId}/edit`} className="text-sm font-bold text-[#0B1F3A] transition hover:text-[#C8A45D]">Edit</Link>
+                      <DeletePropertyButton propertyId={property.propertyId} />
+                    </div>
                   </td>
                 </tr>
               ))}

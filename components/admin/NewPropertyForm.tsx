@@ -237,9 +237,7 @@ export default function NewPropertyForm() {
   const [isCheckingId, setIsCheckingId] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [isUploadingImages, setIsUploadingImages] = useState(false);
   const [imageUploadError, setImageUploadError] = useState("");
-  const [uploadedImageCount, setUploadedImageCount] = useState(0);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
   const normalizedInputId = propertyIdInput.trim().toUpperCase();
@@ -362,9 +360,16 @@ export default function NewPropertyForm() {
       return;
     }
 
+    if (selectedImages.length === 0) {
+      setError("Select at least one property image before importing.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
+      await uploadImages(jsonPropertyId);
+
       const response = await fetch("/api/admin/properties", {
         method: "POST",
         headers: {
@@ -381,6 +386,8 @@ export default function NewPropertyForm() {
 
       setSuccessPropertyId(jsonPropertyId);
       setJsonText("");
+      setSelectedImages([]);
+      if (imageInputRef.current) imageInputRef.current.value = "";
       setPropertyIdInput("");
       setCheckedPropertyId("");
       setIdStatus("idle");
@@ -415,13 +422,13 @@ export default function NewPropertyForm() {
 
     setSelectedImages(images);
     setImageUploadError("");
-    setUploadedImageCount(0);
   }
 
-  async function uploadImages() {
-    if (!successPropertyId || selectedImages.length === 0) return;
+  async function uploadImages(propertyId: string) {
+    if (selectedImages.length === 0) {
+      throw new Error("Select at least one property image.");
+    }
 
-    setIsUploadingImages(true);
     setImageUploadError("");
 
     try {
@@ -432,7 +439,7 @@ export default function NewPropertyForm() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              propertyId: successPropertyId,
+              propertyId,
               imageIndex: index + 1,
             }),
           }
@@ -465,20 +472,12 @@ export default function NewPropertyForm() {
           throw new Error(uploadResult.error?.message || "Unable to upload image");
         }
 
-        setUploadedImageCount(index + 1);
       }
 
-      setSelectedImages([]);
-      if (imageInputRef.current) imageInputRef.current.value = "";
-      router.refresh();
     } catch (uploadError) {
-      setImageUploadError(
-        uploadError instanceof Error
-          ? uploadError.message
-          : "Unable to upload property images"
-      );
-    } finally {
-      setIsUploadingImages(false);
+      const message = uploadError instanceof Error ? uploadError.message : "Unable to upload property images";
+      setImageUploadError(message);
+      throw new Error(message);
     }
   }
 
@@ -493,57 +492,8 @@ export default function NewPropertyForm() {
             {successPropertyId} was added successfully
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-green-800">
-            Select all property images at once. They will upload to Cloudinary
-            automatically in the order shown below.
+            Your required property images were uploaded to Cloudinary before this listing was imported.
           </p>
-
-          <input
-            ref={imageInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={(event) => selectImages(event.target.files)}
-            className="sr-only"
-          />
-
-          <div className="mt-4 flex flex-col gap-3 md:flex-row">
-            <button
-              type="button"
-              onClick={() => imageInputRef.current?.click()}
-              disabled={isUploadingImages}
-              className="rounded-2xl border border-green-300 bg-white px-5 py-3 text-sm font-bold text-green-800 transition hover:bg-green-100 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              Select Property Images
-            </button>
-            <button
-              type="button"
-              onClick={uploadImages}
-              disabled={selectedImages.length === 0 || isUploadingImages}
-              className="rounded-2xl bg-[#0B1F3A] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#132e52] disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isUploadingImages
-                ? "Uploading Images..."
-                : `Upload ${selectedImages.length || ""} Image${selectedImages.length === 1 ? "" : "s"}`}
-            </button>
-          </div>
-
-          {selectedImages.length > 0 && (
-            <p className="mt-3 text-sm font-medium text-green-800">
-              {selectedImages.length} image{selectedImages.length === 1 ? "" : "s"} selected: {selectedImages.slice(0, 3).map((image) => image.name).join(", ")}{selectedImages.length > 3 ? "…" : ""}
-            </p>
-          )}
-
-          {uploadedImageCount > 0 && (
-            <p className="mt-3 text-sm font-semibold text-green-800">
-              {uploadedImageCount} image{uploadedImageCount === 1 ? "" : "s"} uploaded to Cloudinary.
-            </p>
-          )}
-
-          {imageUploadError && (
-            <p className="mt-3 text-sm font-semibold text-red-700">
-              {imageUploadError}
-            </p>
-          )}
 
           <div className="mt-5 flex flex-col gap-3 md:flex-row">
             <button
@@ -558,7 +508,6 @@ export default function NewPropertyForm() {
               onClick={() => {
                 setSuccessPropertyId("");
                 setSelectedImages([]);
-                setUploadedImageCount(0);
                 setImageUploadError("");
               }}
               className="rounded-2xl border border-green-300 bg-white px-5 py-3 text-sm font-bold text-green-800"
@@ -690,6 +639,15 @@ export default function NewPropertyForm() {
               {" "}hitts-homes/properties/{checkedPropertyId}
             </span>
           </div>
+
+          <div className="mt-6 border-t border-gray-200 pt-6">
+            <h3 className="text-base font-bold text-[#0B1F3A]">4. Required Property Images</h3>
+            <p className="mt-1 text-sm text-gray-500">Select up to 20 images. They upload to Cloudinary automatically when you import this property.</p>
+            <input ref={imageInputRef} type="file" accept="image/*" multiple onChange={(event) => selectImages(event.target.files)} className="sr-only" />
+            <button type="button" onClick={() => imageInputRef.current?.click()} disabled={isSubmitting} className="mt-4 rounded-2xl border border-gray-300 bg-white px-5 py-3 text-sm font-bold text-[#0B1F3A] transition hover:bg-gray-50 disabled:opacity-60">Select Property Images</button>
+            {selectedImages.length > 0 && <p className="mt-3 text-sm font-semibold text-green-700">{selectedImages.length} image{selectedImages.length === 1 ? "" : "s"} selected: {selectedImages.slice(0, 3).map((image) => image.name).join(", ")}{selectedImages.length > 3 ? "…" : ""}</p>}
+            {imageUploadError && <p className="mt-3 text-sm font-semibold text-red-700">{imageUploadError}</p>}
+          </div>
         </section>
       )}
 
@@ -710,7 +668,7 @@ export default function NewPropertyForm() {
         <section className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm md:p-7">
           <div>
               <h2 className="text-xl font-bold text-[#0B1F3A]">
-              4. Import Preview
+              5. Import Preview
             </h2>
             <p className="mt-1 text-sm text-gray-500">
               Confirm this is the property you want to add.
@@ -780,11 +738,12 @@ export default function NewPropertyForm() {
             !canPasteJson ||
             !parsed.data ||
             Boolean(parsed.error) ||
-            idMismatch
+            idMismatch ||
+            selectedImages.length === 0
           }
           className="rounded-2xl bg-[#0B1F3A] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#102b50] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isSubmitting ? "Importing Property..." : "Import Property"}
+          {isSubmitting ? "Uploading Images & Importing..." : "Import Property"}
         </button>
       </div>
     </form>

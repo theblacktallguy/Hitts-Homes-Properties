@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
@@ -172,6 +173,9 @@ export async function POST(req: Request) {
 
         const fullName = getText(formData, "fullName");
         const email = getText(formData, "email");
+        const propertyId = getText(formData, "propertyId");
+        const propertyTitle = getText(formData, "propertyTitle");
+        const propertyAddress = getText(formData, "propertyAddress");
 
         const attachments =
             await Promise.all(
@@ -179,6 +183,19 @@ export async function POST(req: Request) {
                     fileToAttachment(item.file as File)
                 )
             );
+
+        await prisma.rentalApplication.create({
+            data: {
+                fullName,
+                email,
+                phone: getText(formData, "phone"),
+                propertyId,
+                propertyTitle,
+                propertyAddress,
+                desiredMoveInDate: getText(formData, "desiredMoveInDate"),
+                leaseTerm: getText(formData, "leaseTerm"),
+            },
+        });
 
         await resend.emails.send({
             from: "onboarding@resend.dev",
