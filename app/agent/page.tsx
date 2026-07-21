@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiPhone, FiMail, FiStar, FiMapPin, FiAward, FiCheckCircle } from "react-icons/fi";
 import SearchHeader from "@/components/layout/SearchHeader";
+import { formatPhoneNumber } from "@/lib/formatPhoneNumber";
 
 
 const AGENT = {
@@ -123,9 +124,11 @@ function ContactForm() {
                     </label>
                     <input
                         value={form.phone}
-                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                        onChange={(e) => setForm({ ...form, phone: formatPhoneNumber(e.target.value) })}
                         placeholder="(000) 000-0000"
                         type="tel"
+                        inputMode="numeric"
+                        maxLength={14}
                         className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-black transition"
                     />
                 </div>

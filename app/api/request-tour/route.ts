@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { stepSchemas } from "@/components/forms/request-tour/validation";
 import { prisma } from "@/lib/prisma";
+import { getResendSender } from "@/lib/emailSender";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -48,7 +49,7 @@ export async function POST(req: Request) {
         });
 
         const emailResult = await resend.emails.send({
-            from: process.env.RESEND_FROM_EMAIL || "Hitts Homes <onboarding@resend.dev>",
+            from: getResendSender(),
             to: "agentdavidhitt@gmail.com",
             subject: `New Tour Request from ${data.fullName} — Hitts Homes and Properties`,
             html: `

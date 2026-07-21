@@ -1,6 +1,7 @@
 "use client";
 
 import { PropertyStepProps } from "../types";
+import { formatPhoneNumber } from "@/lib/formatPhoneNumber";
 
 export default function PersonalInfo({
     formData,
@@ -133,12 +134,16 @@ export default function PersonalInfo({
 
                     type="tel"
 
-                    placeholder="Your phone number"
+                    inputMode="numeric"
+
+                    maxLength={14}
+
+                    placeholder="(000) 000-0000"
 
                     value={formData.phone}
 
                     onChange={(e) =>
-                        onChange("phone", e.target.value)
+                        onChange("phone", formatPhoneNumber(e.target.value))
                     }
 
                     className="

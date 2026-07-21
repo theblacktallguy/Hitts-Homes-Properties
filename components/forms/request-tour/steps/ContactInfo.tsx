@@ -1,6 +1,7 @@
 "use client";
 
 import { RequestTourStepProps } from "../types";
+import { formatPhoneNumber } from "@/lib/formatPhoneNumber";
 
 export default function ContactInfo({
     formData,
@@ -112,11 +113,13 @@ export default function ContactInfo({
 
                 <input
                     type="tel"
+                    inputMode="numeric"
+                    maxLength={14}
                     value={formData.phone}
                     onChange={(e) =>
-                        onChange("phone", e.target.value)
+                        onChange("phone", formatPhoneNumber(e.target.value))
                     }
-                    placeholder="Your phone number"
+                    placeholder="(000) 000-0000"
                     className="
                     mt-2
                     w-full

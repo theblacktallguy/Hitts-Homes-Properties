@@ -72,7 +72,7 @@ export default function FormNavigation({
 
                 {currentStep === totalSteps - 1
                     ? isSubmitting
-                        ? "Submitting..."
+                        ? "Submitting Request..."
                         : "Submit Request"
                     : "Continue"}
 

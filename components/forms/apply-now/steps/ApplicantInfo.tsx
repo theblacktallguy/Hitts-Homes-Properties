@@ -1,6 +1,7 @@
 "use client";
 
 import { ApplyNowStepProps } from "../types";
+import { formatPhoneNumber } from "@/lib/formatPhoneNumber";
 
 const contactMethods = [
     {
@@ -122,11 +123,13 @@ export default function ApplicantInfo({
 
                     <input
                         type="tel"
+                        inputMode="numeric"
+                        maxLength={14}
                         value={formData.phone}
                         onChange={(e) =>
-                            onChange("phone", e.target.value)
+                            onChange("phone", formatPhoneNumber(e.target.value))
                         }
-                        placeholder="Your phone number"
+                        placeholder="(000) 000-0000"
                         className={inputClass}
                     />
 

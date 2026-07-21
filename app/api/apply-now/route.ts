@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
+import { getResendSender } from "@/lib/emailSender";
 
 export const runtime = "nodejs";
 
@@ -198,7 +199,7 @@ export async function POST(req: Request) {
         });
 
         const emailResult = await resend.emails.send({
-            from: process.env.RESEND_FROM_EMAIL || "Hitts Homes <onboarding@resend.dev>",
+            from: getResendSender(),
             to: "agentdavidhitt@gmail.com",
             subject: `New Rental Application from ${fullName} — Hitts Homes and Properties`,
             html: `
