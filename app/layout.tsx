@@ -8,17 +8,17 @@ import Footer from "@/components/layout/Footer";
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://hittshomes.vercel.app"),
+  metadataBase: new URL("https://hittshomes.com"),
   title: "Hitts Homes & Properties",
   description: "Search verified homes, apartments, and properties for rent and sale with Hitts Homes & Properties.",
   openGraph: {
     title: "Hitts Homes & Properties",
     description: "Search verified homes, apartments, and properties for rent and sale with Hitts Homes & Properties.",
-    url: "https://hittshomes.vercel.app", // 👈 replace with your actual domain
+    url: "https://hittshomes.com",
     siteName: "Hitts Homes & Properties",
     images: [
       {
-        url: "/banner/menu-hero.jpg",
+        url: "https://hittshomes.com/banner/menu-hero.jpg", // 👈 full URL
         width: 1200,
         height: 630,
         alt: "Hitts Homes & Properties",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Hitts Homes & Properties",
     description: "Search verified homes, apartments, and properties for rent and sale with Hitts Homes & Properties.",
-    images: ["/banner/menu-hero.jpg"],
+    images: ["https://hittshomes.com/banner/menu-hero.jpg"], // 👈 full URL
   },
 };
 
