@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { stepSchemas } from "@/components/forms/property-request/validation";
 import { getResendSender } from "@/lib/emailSender";
+import { prisma } from "@/lib/prisma";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -32,6 +33,27 @@ export async function POST(req: Request) {
         }
 
         const data = result.data;
+
+        await prisma.propertyRequest.create({
+            data: {
+                fullName: data.fullName,
+                email: data.email,
+                phone: data.phone,
+                lookingFor: data.lookingFor,
+                state: data.state,
+                city: data.city,
+                neighborhood: data.neighborhood?.trim() || null,
+                propertyType: data.propertyType,
+                bedrooms: data.bedrooms,
+                bathrooms: data.bathrooms,
+                minBudget: data.minBudget,
+                maxBudget: data.maxBudget,
+                timeline: data.timeline,
+                amenities: data.amenities ?? [],
+                openToSuggestions: data.openToSuggestions ?? false,
+                message: data.message?.trim() || null,
+            },
+        });
 
         const emailResult = await resend.emails.send({
             from: getResendSender(),

@@ -44,6 +44,7 @@ export default function AdminLayout({
             </Link>
             <Link href="/admin/applications" className="transition hover:text-[#0B1F3A]">Applications</Link>
             <Link href="/admin/tours" className="transition hover:text-[#0B1F3A]">Tours</Link>
+            <Link href="/admin/property-requests" className="transition hover:text-[#0B1F3A]">Property Requests</Link>
           </nav>
 
           <AdminLogoutButton />

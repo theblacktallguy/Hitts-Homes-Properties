@@ -61,7 +61,7 @@ export default function SearchHeader() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Search city, state"
+            placeholder="Search City, State"
             className="flex-1 outline-none text-sm text-black bg-transparent"
           />
           <button
