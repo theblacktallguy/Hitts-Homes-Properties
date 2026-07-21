@@ -25,6 +25,15 @@ export default function SearchHeader() {
     router.push(target);
   };
 
+  const handleBack = () => {
+    if (window.history.length <= 1) {
+      router.replace("/");
+      return;
+    }
+
+    router.back();
+  };
+
   return (
     <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-50">
 
@@ -34,7 +43,7 @@ export default function SearchHeader() {
         {/* BACK BUTTON */}
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={handleBack}
           className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-600 bg-gray-100 transition shrink-0"
         >
           <FiArrowLeft className="text-xl text-black" />
@@ -83,7 +92,7 @@ export default function SearchHeader() {
         <div className="flex items-center">
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={handleBack}
             className="flex items-center gap-2 text-sm font-medium text-black hover:text-black transition group"
           >
             <span className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 group-hover:bg-gray-600 bg-gray-100 transition">

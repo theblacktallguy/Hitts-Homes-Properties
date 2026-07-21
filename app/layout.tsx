@@ -25,9 +25,9 @@ export const metadata: Metadata = {
     siteName: "Hitts Homes & Properties",
     images: [
       {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
+        url: "/opengrapgh.png",
+        width: 1734,
+        height: 907,
         alt: "Hitts Homes & Properties",
       },
     ],
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Hitts Homes & Properties",
     description: "Search verified homes, apartments, and properties for rent and sale with Hitts Homes & Properties.",
-    images: ["/opengraph-image"],
+    images: ["/opengrapgh.png"],
   },
 };
 
