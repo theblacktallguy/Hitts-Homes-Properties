@@ -47,8 +47,8 @@ export async function POST(req: Request) {
             },
         });
 
-        await resend.emails.send({
-            from: "onboarding@resend.dev",
+        const emailResult = await resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL || "Hitts Homes <onboarding@resend.dev>",
             to: "agentdavidhitt@gmail.com",
             subject: `New Tour Request from ${data.fullName} — Hitts Homes and Properties`,
             html: `
@@ -84,6 +84,10 @@ export async function POST(req: Request) {
             `,
             replyTo: data.email,
         });
+
+        if (emailResult.error) {
+            throw new Error(emailResult.error.message);
+        }
 
         return NextResponse.json({ success: true });
     } catch (error) {

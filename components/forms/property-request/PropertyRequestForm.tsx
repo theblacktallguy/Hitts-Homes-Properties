@@ -110,13 +110,14 @@ export default function PropertyRequestForm() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit property request");
+        const result = await response.json();
+        throw new Error(result.error || "Failed to submit property request");
       }
 
       setIsSubmitted(true);
     } catch (error) {
       console.error(error);
-      alert("Something went wrong. Please try again.");
+      alert(error instanceof Error ? error.message : "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
