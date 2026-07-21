@@ -5,6 +5,13 @@ import { useRouter } from "next/navigation";
 
 type Props = { id: string; kind: "applications" | "tours"; status: string };
 
+const timeOptions = [
+  "8:00 AM", "8:30 AM", "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM",
+  "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM",
+  "2:00 PM", "2:30 PM", "3:00 PM", "3:30 PM", "4:00 PM", "4:30 PM",
+  "5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM",
+];
+
 export default function RequestDecisionForm({ id, kind, status }: Props) {
   const router = useRouter();
   const [note, setNote] = useState("");
@@ -26,7 +33,7 @@ export default function RequestDecisionForm({ id, kind, status }: Props) {
 
   if (status !== "pending") return <span className="text-sm font-bold capitalize text-gray-700">{status}</span>;
   return <div className="mt-4 space-y-3 border-t border-gray-200 pt-4">
-    {kind === "applications" ? <div className="grid grid-cols-2 gap-3"><input value={applicationFee} onChange={(event) => setApplicationFee(event.target.value)} inputMode="numeric" placeholder="Application fee ($)" className="rounded-xl border border-gray-200 px-3 text-black py-2 text-sm" /><input value={additionalFees} onChange={(event) => setAdditionalFees(event.target.value)} inputMode="numeric" placeholder="Security deposit ($)" className="rounded-xl border border-gray-200 px-3 text-black py-2 text-sm" /></div> : <div className="grid grid-cols-2 gap-3"><input type="date" value={confirmedDate} onChange={(event) => setConfirmedDate(event.target.value)} className="rounded-xl border border-gray-200 px-3 text-black  py-2 text-sm" /><input type="time" value={confirmedTime} onChange={(event) => setConfirmedTime(event.target.value)} className="rounded-xl border border-gray-200 px-3 text-black py-2 text-sm" /></div>}
+    {kind === "applications" ? <div className="grid grid-cols-2 gap-3"><input value={applicationFee} onChange={(event) => setApplicationFee(event.target.value)} inputMode="numeric" placeholder="Application fee ($)" className="rounded-xl border border-gray-200 px-3 text-black py-2 text-sm" /><input value={additionalFees} onChange={(event) => setAdditionalFees(event.target.value)} inputMode="numeric" placeholder="Security deposit ($)" className="rounded-xl border border-gray-200 px-3 text-black py-2 text-sm" /></div> : <div className="grid grid-cols-2 gap-3"><input type="date" value={confirmedDate} onChange={(event) => setConfirmedDate(event.target.value)} className="rounded-xl border border-gray-200 px-3 text-black py-2 text-sm" /><select value={confirmedTime} onChange={(event) => setConfirmedTime(event.target.value)} className="rounded-xl border border-gray-200 px-3 py-2 text-sm text-black"><option value="">Select a time</option>{timeOptions.map((time) => <option key={time} value={time}>{time}</option>)}</select></div>}
     <textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Optional note for the applicant" rows={2} className="w-full rounded-xl border border-gray-200 px-3 text-black py-2 text-sm" />
     <div className="flex gap-3"><button type="button" disabled={sending} onClick={() => decide("approved")} className="rounded-xl bg-[#0B1F3A] px-4 py-2 text-sm font-bold text-white disabled:opacity-60">Approve & Email</button><button type="button" disabled={sending} onClick={() => decide("denied")} className="rounded-xl border border-red-200 px-4 py-2 text-sm font-bold text-red-700 disabled:opacity-60">Deny & Email</button></div>
     {message && <p className="text-sm font-semibold text-[#0B1F3A]">{message}</p>}

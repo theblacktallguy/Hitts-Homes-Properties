@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
-import { companyEmail, detailCard, escapeHtml, formatCurrency } from "@/lib/emailTemplates";
+import { companyEmail, escapeHtml, formatCurrency } from "@/lib/emailTemplates";
 import { getResendSender } from "@/lib/emailSender";
 import { prisma } from "@/lib/prisma";
 
@@ -12,6 +12,17 @@ function requestedPropertyIds(body: Record<string, unknown>) {
     .filter((id): id is string => typeof id === "string")
     .map((id) => id.trim().toUpperCase())
     .filter(Boolean))].slice(0, 3);
+}
+
+function propertyImageUrl(imageFolder: string, propertyId: string) {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_CLOUD_NAME;
+  const folder = imageFolder || propertyId;
+
+  if (!cloudName) {
+    return `https://hittshomes.com/property-images/${encodeURIComponent(folder)}/1.webp`;
+  }
+
+  return `https://res.cloudinary.com/${cloudName}/image/upload/c_fill,w_360,h_220,f_auto,q_auto/hitts-homes/properties/${encodeURIComponent(folder)}/1`;
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -43,9 +54,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           city: true,
           state: true,
           zipCode: true,
+          imageFolder: true,
           price: true,
           bedrooms: true,
           bathrooms: true,
+          sqft: true,
           listingType: true,
         },
       })
@@ -56,6 +69,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     if (unavailableIds.length) {
       return NextResponse.json({ error: `These property IDs are unavailable: ${unavailableIds.join(", ")}` }, { status: 400 });
     }
+
+    properties.sort((first, second) => ids.indexOf(first.propertyId) - ids.indexOf(second.propertyId));
 
     const propertyRequest = await prisma.propertyRequest.update({
       where: { id },
@@ -70,7 +85,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       ? `<div style="background:#f8f7f4;border-left:4px solid #C8A45D;border-radius:8px;padding:16px 20px;margin:20px 0;"><div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#7c6233;margin-bottom:6px;">Note from your agent</div><p style="margin:0;font-size:14px;line-height:1.7;color:#344054;">${escapeHtml(propertyRequest.decisionNote)}</p></div>`
       : "";
 
-    const propertyCards = `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0;"><tr>${properties.map((property) => `<td width="${Math.floor(100 / properties.length)}%" style="vertical-align:top;padding:0 5px 10px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="height:100%;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;"><tr><td style="padding:16px 14px;"><div style="font-size:14px;line-height:1.35;font-weight:700;color:#0B1F3A;margin-bottom:8px;">${escapeHtml(property.title)}</div><div style="font-size:12px;line-height:1.55;color:#667085;margin-bottom:10px;">${escapeHtml(`${property.address}, ${property.city}, ${property.state}${property.zipCode ? ` ${property.zipCode}` : ""}`)}</div><div style="font-size:12px;line-height:1.55;color:#344054;font-weight:700;">${escapeHtml(`${formatCurrency(property.price)} · ${property.bedrooms} bd · ${property.bathrooms} ba`)}</div></td></tr><tr><td style="padding:0 14px 16px;"><a href="https://hittshomes.com/property/${encodeURIComponent(property.propertyId)}" style="display:block;background:#0B1F3A;border-radius:8px;padding:11px 8px;color:#ffffff;font-size:12px;font-weight:700;text-align:center;text-decoration:none;">View Property</a></td></tr></table></td>`).join("")}</tr></table>`;
+    const propertyCards = `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0;"><tr>${properties.map((property) => {
+      const listingType = property.listingType === "rent" ? "For Rent" : "For Sale";
+      const price = `${formatCurrency(property.price)}${property.listingType === "rent" ? "/mo" : ""}`;
+      const details = `${property.bedrooms} Beds · ${property.bathrooms} Baths${property.sqft ? ` · ${property.sqft.toLocaleString()} sqft` : ""}`;
+      const location = `${property.city}, ${property.state}`;
+
+      return `<td width="${Math.floor(100 / properties.length)}%" style="vertical-align:top;padding:0 5px 10px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="height:100%;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;background:#ffffff;"><tr><td style="padding:0;"><img src="${propertyImageUrl(property.imageFolder, property.propertyId)}" alt="${escapeHtml(property.title)}" width="100%" style="display:block;width:100%;height:120px;object-fit:cover;background:#f3f4f6;" /></td></tr><tr><td style="padding:12px 12px 8px;"><div style="font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#9A762E;margin-bottom:6px;">${listingType}</div><div style="font-size:16px;line-height:1.25;font-weight:700;color:#0B1F3A;margin-bottom:6px;">${escapeHtml(price)}</div><div style="font-size:12px;line-height:1.35;font-weight:700;color:#162033;margin-bottom:5px;">${escapeHtml(property.title)}</div><div style="font-size:11px;line-height:1.45;color:#667085;margin-bottom:8px;">${escapeHtml(location)}</div><div style="border-top:1px solid #edf0f2;padding-top:8px;font-size:10px;line-height:1.4;color:#475467;">${escapeHtml(details)}</div></td></tr><tr><td style="padding:4px 12px 14px;"><a href="https://hittshomes.com/property/${encodeURIComponent(property.propertyId)}" style="display:block;background:#0B1F3A;border-radius:8px;padding:11px 6px;color:#ffffff;font-size:11px;font-weight:700;text-align:center;text-decoration:none;">View Property</a></td></tr></table></td>`;
+    }).join("")}</tr></table>`;
 
     const hasMatches = status === "found";
     const content = hasMatches
@@ -79,7 +101,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         <p style="font-size:15px;line-height:1.8;color:#344054;margin:0 0 20px;">Our team reviewed your request and selected these available properties that may be a great fit.</p>
         ${propertyCards}
         ${note}
-        <p style="font-size:14px;line-height:1.7;color:#667085;margin:24px 0 0;">Reply to this email or contact your Hitts Homes agent to arrange a tour or discuss your options.</p>
+        <p style="font-size:14px;line-height:1.7;color:#667085;margin:24px 0 8px;">Select <strong>View Property</strong> on any listing above to see the full photo gallery, address, features, availability, and next steps.</p>
       `
       : `
         <div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:14px;padding:24px;margin-bottom:28px;text-align:center;"><div style="font-size:32px;margin-bottom:8px;">🔎</div><div style="font-size:18px;font-weight:700;color:#162033;margin-bottom:6px;">An update on your property request</div></div>

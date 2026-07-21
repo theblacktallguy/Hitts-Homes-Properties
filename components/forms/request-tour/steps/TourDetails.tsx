@@ -22,6 +22,13 @@ const financingOptions = [
     "Not sure yet",
 ];
 
+const timeOptions = [
+    "8:00 AM", "8:30 AM", "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM",
+    "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM",
+    "2:00 PM", "2:30 PM", "3:00 PM", "3:30 PM", "4:00 PM", "4:30 PM",
+    "5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM",
+];
+
 function formatDateInput(value: string) {
     const digits = value.replace(/\D/g, "").slice(0, 8);
 
@@ -34,16 +41,6 @@ function formatDateInput(value: string) {
     }
 
     return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
-}
-
-function formatTimeInput(value: string) {
-    const digits = value.replace(/\D/g, "").slice(0, 4);
-
-    if (digits.length <= 2) {
-        return digits;
-    }
-
-    return `${digits.slice(0, 2)}:${digits.slice(2)}`;
 }
 
 export default function TourDetails({
@@ -345,28 +342,16 @@ export default function TourDetails({
                             Preferred Time
                         </label>
 
-                        <input
-                            type="text"
-                            inputMode="numeric"
-                            value={formData.preferredTime}
-                            onChange={(e) =>
-                                onChange(
-                                    "preferredTime",
-                                    formatTimeInput(e.target.value)
-                                )
-                            }
-                            placeholder="HH:MM"
-                            className={`${inputClass} md:hidden`}
-                        />
-
-                        <input
-                            type="time"
+                        <select
                             value={formData.preferredTime}
                             onChange={(e) =>
                                 onChange("preferredTime", e.target.value)
                             }
-                            className={`${inputClass} hidden md:block`}
-                        />
+                            className={inputClass}
+                        >
+                            <option value="">Select a time</option>
+                            {timeOptions.map((time) => <option key={time} value={time}>{time}</option>)}
+                        </select>
 
                         {errors.preferredTime && (
                             <p className="mt-2 text-sm text-red-600">
@@ -417,28 +402,16 @@ export default function TourDetails({
                             </span>
                         </label>
 
-                        <input
-                            type="text"
-                            inputMode="numeric"
-                            value={formData.alternateTime}
-                            onChange={(e) =>
-                                onChange(
-                                    "alternateTime",
-                                    formatTimeInput(e.target.value)
-                                )
-                            }
-                            placeholder="HH:MM"
-                            className={`${inputClass} md:hidden`}
-                        />
-
-                        <input
-                            type="time"
+                        <select
                             value={formData.alternateTime}
                             onChange={(e) =>
                                 onChange("alternateTime", e.target.value)
                             }
-                            className={`${inputClass} hidden md:block`}
-                        />
+                            className={inputClass}
+                        >
+                            <option value="">Select a time</option>
+                            {timeOptions.map((time) => <option key={time} value={time}>{time}</option>)}
+                        </select>
                     </div>
 
                 </div>

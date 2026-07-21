@@ -7,5 +7,5 @@ export function getResendSender() {
     return "onboarding@resend.dev";
   }
 
-  return `Hitts Homes <${emailAddress}>`;
+  return `Hitts Homes & Properties <${emailAddress}>`;
 }

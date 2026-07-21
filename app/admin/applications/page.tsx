@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import RequestDecisionForm from "@/components/admin/RequestDecisionForm";
 
@@ -16,6 +17,9 @@ export default async function ApplicationsPage() {
   return (
     <section className="mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-12">
       <div className="mb-8">
+        <Link href="/admin" className="text-sm font-bold text-[#0B1F3A] transition hover:text-[#C8A45D]">
+          ← Back to Dashboard
+        </Link>
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#C8A45D]">
           Admin Panel
         </p>

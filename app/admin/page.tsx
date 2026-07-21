@@ -8,7 +8,16 @@ export const metadata = {
 };
 
 export default async function AdminDashboardPage() {
-  const [totalProperties, activeProperties, rentProperties, saleProperties, recentProperties] =
+  const [
+    totalProperties,
+    activeProperties,
+    rentProperties,
+    saleProperties,
+    pendingApplications,
+    pendingTours,
+    pendingPropertyRequests,
+    recentProperties,
+  ] =
     await Promise.all([
       prisma.property.count(),
       prisma.property.count({
@@ -24,6 +33,21 @@ export default async function AdminDashboardPage() {
       prisma.property.count({
         where: {
           listingType: "sale",
+        },
+      }),
+      prisma.rentalApplication.count({
+        where: {
+          status: "pending",
+        },
+      }),
+      prisma.tourRequest.count({
+        where: {
+          status: "pending",
+        },
+      }),
+      prisma.propertyRequest.count({
+        where: {
+          status: "pending",
         },
       }),
       prisma.property.findMany({
@@ -62,6 +86,28 @@ export default async function AdminDashboardPage() {
     },
   ];
 
+  const formInboxItems = [
+    {
+      href: "/admin/applications",
+      label: "Rental Applications",
+      count: pendingApplications,
+      description: "need a decision",
+    },
+    {
+      href: "/admin/tours",
+      label: "Tour Requests",
+      count: pendingTours,
+      description: "need a response",
+    },
+    {
+      href: "/admin/property-requests",
+      label: "Property Requests",
+      count: pendingPropertyRequests,
+      description: "need matching",
+    },
+  ];
+  const totalPendingForms = formInboxItems.reduce((total, item) => total + item.count, 0);
+
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
@@ -99,6 +145,47 @@ export default async function AdminDashboardPage() {
           </div>
         ))}
       </div>
+
+      <section className={`mt-8 rounded-3xl border p-5 shadow-sm md:p-6 ${totalPendingForms > 0 ? "border-[#E5D2A7] bg-[#FFFCF5]" : "border-gray-200 bg-white"}`}>
+          <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
+            <div>
+              <p className={`text-sm font-semibold uppercase tracking-[0.18em] ${totalPendingForms > 0 ? "text-[#9A762E]" : "text-gray-500"}`}>
+                {totalPendingForms > 0 ? "Action Needed" : "Form Inbox"}
+              </p>
+              <h2 className="mt-1 text-xl font-bold text-[#0B1F3A]">
+                {totalPendingForms > 0
+                  ? `You have ${totalPendingForms} unattended form${totalPendingForms === 1 ? "" : "s"}.`
+                  : "You are all caught up."}
+              </h2>
+            </div>
+            <span className={`w-fit rounded-full px-3 py-1 text-xs font-bold ${totalPendingForms > 0 ? "bg-[#C8A45D] text-[#0B1F3A]" : "bg-green-50 text-green-700"}`}>
+              {totalPendingForms > 0 ? "Review inbox" : "No pending forms"}
+            </span>
+          </div>
+
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            {formInboxItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`group rounded-2xl border bg-white p-4 transition hover:shadow-sm ${item.count > 0 ? "border-[#E5D2A7] hover:border-[#C8A45D]" : "border-gray-200 hover:border-[#C8A45D]"}`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-bold text-[#0B1F3A]">{item.label}</p>
+                  <span className="flex h-8 min-w-8 items-center justify-center rounded-full bg-[#0B1F3A] px-2 text-sm font-bold text-white">
+                    {item.count}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm text-gray-600">
+                  {item.count > 0 ? `${item.count} ${item.description}.` : "No pending forms."}
+                </p>
+                <p className="mt-3 text-sm font-bold text-[#9A762E] group-hover:text-[#0B1F3A]">
+                  Open section →
+                </p>
+              </Link>
+            ))}
+          </div>
+      </section>
 
       <div className="mt-8 rounded-3xl border border-gray-200 bg-white shadow-sm">
         <div className="flex items-center justify-between gap-4 border-b border-gray-200 p-5">

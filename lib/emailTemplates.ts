@@ -35,7 +35,9 @@ export function companyEmail({ title, preview, greeting, content }: EmailLayoutO
                 <table role="presentation" cellspacing="0" cellpadding="0">
                   <tr>
                     <td style="vertical-align:middle;padding-right:12px;">
-                      <img src="https://hittshomes.com/logo/logobg.png" alt="Hitts Homes Logo" width="44" height="44" style="display:block;border-radius:8px;" />
+                      <div style="width:48px;height:48px;background:#ffffff;border-radius:12px;padding:4px;box-sizing:border-box;box-shadow:0 2px 8px rgba(0,0,0,.16);">
+                        <img src="https://hittshomes.com/logo/logobg.png" alt="Hitts Homes Logo" width="40" height="40" style="display:block;width:40px;height:40px;object-fit:contain;border-radius:8px;" />
+                      </div>
                     </td>
                     <td style="vertical-align:middle;">
                       <span style="font-size:16px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">Hitts Homes &amp; Properties</span>
@@ -52,8 +54,8 @@ export function companyEmail({ title, preview, greeting, content }: EmailLayoutO
           <p style="margin:0 0 18px;font-size:16px;line-height:1.6;">${escapeHtml(greeting)}</p>
           ${content}
         </td></tr>
-        <tr><td style="padding:22px 32px;background:#f8f7f4;border-top:1px solid #e9e6df;color:#667085;font-size:12px;line-height:1.6;">
-          Questions? Contact your Hitts Homes agent at <a href="mailto:agentdavidhitt@gmail.com" style="color:#0B1F3A;font-weight:700;text-decoration:none;">agentdavidhitt@gmail.com</a> or (248) 636-0376.<br />
+        <tr><td style="padding:22px 32px;background:#f8f7f4;border-top:1px solid #e9e6df;color:#667085;font-size:12px;line-height:1.6;text-align:center;">
+          This is an automated no-reply email. Questions? Contact your Hitts Homes agent at <a href="mailto:agentdavidhitt@gmail.com" style="color:#0B1F3A;font-weight:700;text-decoration:none;">agentdavidhitt@gmail.com</a> or (248) 636-0376.<br />
           © ${new Date().getFullYear()} Hitts Homes &amp; Properties. All rights reserved.
         </td></tr>
       </table>
