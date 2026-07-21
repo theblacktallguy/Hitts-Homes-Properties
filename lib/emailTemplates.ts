@@ -27,10 +27,27 @@ export function companyEmail({ title, preview, greeting, content }: EmailLayoutO
     <div style="margin:0;padding:32px 16px;background:#f4f6f8;font-family:Arial,Helvetica,sans-serif;color:#162033;">
       <span style="display:none!important;visibility:hidden;opacity:0;height:0;width:0;overflow:hidden;">${escapeHtml(preview)}</span>
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 12px 32px rgba(11,31,58,.10);">
-        <tr><td style="padding:28px 32px;background:#0B1F3A;color:#ffffff;">
-          <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C8A45D;">Hitts Homes &amp; Properties</div>
-          <div style="margin-top:10px;font-size:25px;font-weight:700;line-height:1.25;">${escapeHtml(title)}</div>
+        
+        <tr><td style="padding:22px 32px;background:#0B1F3A;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="vertical-align:middle;">
+                <table role="presentation" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td style="vertical-align:middle;padding-right:12px;">
+                      <img src="https://hittshomes.com/logo/logobg.png" alt="Hitts Homes Logo" width="44" height="44" style="display:block;border-radius:8px;" />
+                    </td>
+                    <td style="vertical-align:middle;">
+                      <span style="font-size:16px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">Hitts Homes &amp; Properties</span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <div style="margin-top:18px;font-size:25px;font-weight:700;line-height:1.25;color:#ffffff;text-align:center;">${escapeHtml(title)}</div>
         </td></tr>
+
         <tr><td style="padding:32px;">
           <p style="margin:0 0 18px;font-size:16px;line-height:1.6;">${escapeHtml(greeting)}</p>
           ${content}
